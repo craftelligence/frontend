@@ -2,37 +2,6 @@
 
 A modern, responsive single-page website built with React.js for Craftelligence - a tech company specializing in backend systems, AI agents, SaaS platforms, and enterprise software.
 
-## 📁 File Structure
-
-```
-craftelligence-frontend/
-├── public/
-│   ├── index.html
-│   └── logo.png
-├── src/
-│   ├── components/
-│   │   ├── Navbar.js
-│   │   ├── Navbar.css
-│   │   ├── Hero.js
-│   │   ├── Hero.css
-│   │   ├── About.js
-│   │   ├── About.css
-│   │   ├── Services.js
-│   │   ├── Services.css
-│   │   ├── Projects.js
-│   │   ├── Projects.css
-│   │   ├── Contact.js
-│   │   ├── Contact.css
-│   │   ├── Footer.js
-│   │   └── Footer.css
-│   ├── App.js
-│   ├── App.css
-│   ├── index.js
-│   └── index.css
-├── package.json
-└── README.md
-```
-
 ## 🚀 Sections
 
 1. **Hero Section** - Animated tagline with floating elements and particles
