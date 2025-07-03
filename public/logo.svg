@@ -1,0 +1,71 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradient definitions -->
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#A259FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8B5CF6;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#E0E7FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Glow effect -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background circle with gradient -->
+  <circle cx="100" cy="100" r="95" fill="url(#logoGradient)" stroke="#1A1D3D" stroke-width="2"/>
+  
+  <!-- Inner circle for depth -->
+  <circle cx="100" cy="100" r="85" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  
+  <!-- Tech circuit pattern -->
+  <g stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="none">
+    <path d="M 30 70 L 50 70 L 50 90 L 70 90"/>
+    <path d="M 130 70 L 150 70 L 150 90 L 170 90"/>
+    <path d="M 70 110 L 90 110 L 90 130 L 110 130"/>
+    <path d="M 90 70 L 110 70 L 110 90"/>
+    <circle cx="50" cy="70" r="2" fill="rgba(255,255,255,0.3)"/>
+    <circle cx="150" cy="70" r="2" fill="rgba(255,255,255,0.3)"/>
+    <circle cx="90" cy="110" r="2" fill="rgba(255,255,255,0.3)"/>
+    <circle cx="110" cy="70" r="2" fill="rgba(255,255,255,0.3)"/>
+  </g>
+  
+  <!-- Main text: CRAFT -->
+  <text x="100" y="85" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" 
+        text-anchor="middle" fill="url(#textGradient)" filter="url(#glow)">
+    CRAFT
+  </text>
+  
+  <!-- Sub text: INTELLIGENCE -->
+  <text x="100" y="105" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="600" 
+        text-anchor="middle" fill="rgba(255,255,255,0.9)">
+    INTELLIGENCE
+  </text>
+  
+  <!-- Tagline -->
+  <text x="100" y="125" font-family="Inter, Arial, sans-serif" font-size="8" font-weight="400" 
+        text-anchor="middle" fill="rgba(255,255,255,0.7)">
+    WE BUILD. YOU SCALE.
+  </text>
+  
+  <!-- Decorative elements -->
+  <g fill="rgba(255,255,255,0.2)">
+    <circle cx="40" cy="40" r="1.5"/>
+    <circle cx="160" cy="40" r="1.5"/>
+    <circle cx="40" cy="160" r="1.5"/>
+    <circle cx="160" cy="160" r="1.5"/>
+  </g>
+  
+  <!-- Center accent -->
+  <circle cx="100" cy="100" r="3" fill="rgba(255,255,255,0.8)"/>
+</svg> 
