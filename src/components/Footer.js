@@ -1,170 +1,291 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import './Footer.css';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const [theme, setTheme] = useState('dark');
 
-  const footerLinks = [
+  useEffect(() => {
+    const stored = localStorage.getItem('theme');
+    const initial = stored === 'light' || stored === 'dark' ? stored : 'dark';
+    setTheme(initial);
+    document.documentElement.setAttribute('data-theme', initial);
+  }, []);
+
+  const toggleTheme = () => {
+    const next = theme === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  };
+
+  const companyLinks = [
+    { name: 'About Us', href: '#about' },
+    { name: 'Services', href: '#services' },
+    { name: 'Projects', href: '#projects' },
+    { name: 'Contact', href: '#contact' }
+  ];
+
+  const serviceLinks = [
+    { name: 'Agentic Platforms', href: '#services' },
+    { name: 'Digital Twin Solutions', href: '#services' },
+    { name: 'SaaS Development', href: '#services' },
+    { name: 'Web Applications', href: '#services' }
+  ];
+
+  const legalLinks = [
     { name: 'Privacy Policy', href: '#' },
     { name: 'Terms of Service', href: '#' },
     { name: 'Cookie Policy', href: '#' }
   ];
 
   const socialLinks = [
-    {
-      name: 'LinkedIn',
-      icon: 'fab fa-linkedin',
+    { 
+      name: 'LinkedIn', 
+      icon: 'fab fa-linkedin', 
       href: 'https://www.linkedin.com/company/craftelligence',
-      color: '#0077B5'
+      label: 'Connect on LinkedIn'
     },
-    {
-      name: 'Email',
-      icon: 'fas fa-envelope',
+    { 
+      name: 'Email', 
+      icon: 'fas fa-envelope', 
       href: 'mailto:hello@craftelligence.tech',
-      color: '#EA4335'
+      label: 'Send us an email'
+    },
+    { 
+      name: 'Phone', 
+      icon: 'fas fa-phone', 
+      href: 'tel:+919079971790',
+      label: 'Give us a call'
+    }
+  ];
+
+  const contactDetails = [
+    {
+      icon: 'fas fa-envelope',
+      text: 'hello@craftelligence.tech',
+      href: 'mailto:hello@craftelligence.tech'
     },
     {
-      name: 'Phone',
       icon: 'fas fa-phone',
-      href: 'tel:+919079971790',
-      color: '#25D366'
+      text: '(+91) 9079971790',
+      href: 'tel:+919079971790'
+    },
+    {
+      icon: 'fas fa-map-marker-alt',
+      text: 'Jaipur, Rajasthan, India',
+      href: null
     }
   ];
 
   return (
     <footer className="footer">
+      {/* Animated Background Elements */}
       <div className="footer-background">
-        <div className="footer-pattern"></div>
+        <div className="animated-gradient"></div>
+        <div className="grid-overlay"></div>
+        <div className="floating-particles">
+          <span className="particle particle-1"></span>
+          <span className="particle particle-2"></span>
+          <span className="particle particle-3"></span>
+          <span className="particle particle-4"></span>
+          <span className="particle particle-5"></span>
+          <span className="particle particle-6"></span>
+          <span className="particle particle-7"></span>
+          <span className="particle particle-8"></span>
+          <span className="particle particle-9"></span>
+          <span className="particle particle-10"></span>
+          <span className="particle particle-11"></span>
+          <span className="particle particle-12"></span>
+        </div>
+        <div className="border-glow-animation"></div>
       </div>
-      
+
       <div className="container">
-        <div className="footer-content">
+        {/* Main Footer Content */}
+        <div className="footer-main">
+          {/* Brand Section */}
           <motion.div 
-            className="footer-brand"
+            className="footer-brand-section"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <div className="footer-logo">
-              <img src="/logo.svg" alt="Craftelligence" className="logo-img" />
-              <div className="logo-text">
-                <h3>Craftelligence</h3>
-                <p>We Build. You Scale.</p>
+            <div className="brand-logo-text-wrapper">
+              <div className="brand-logo-wrapper">
+                <img src="/logo_white.svg" alt="Craftelligence" className="footer-logo-img logo-dark" />
+                <img src="/logo_black.svg" alt="Craftelligence" className="footer-logo-img logo-light" />
+              </div>
+              
+              <div className="brand-content">
+                <h3 className="brand-name">Craftelligence</h3>
+                <p className="brand-tagline">We Build. You Scale.</p>
               </div>
             </div>
-            
-            <p className="footer-description">
+
+            <p className="brand-description">
               Crafting innovative backend systems, AI agents, and SaaS platforms 
               to help businesses scale and succeed in the digital age.
             </p>
-            
-            <div className="footer-social">
-              {socialLinks.map((social, index) => (
-                <motion.a
-                  key={index}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="social-link"
-                  style={{ '--social-color': social.color }}
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <i className={social.icon}></i>
-                </motion.a>
-              ))}
+
+            {/* Social Links */}
+            <div className="social-links-wrapper">
+              <p className="social-title">Connect With Us</p>
+              <div className="social-links">
+                {socialLinks.map((social, index) => (
+                  <motion.a
+                    key={index}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="social-link"
+                    aria-label={social.label}
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                  >
+                    <i className={social.icon}></i>
+                  </motion.a>
+                ))}
+              </div>
             </div>
           </motion.div>
 
+          {/* Quick Links Grid */}
           <motion.div 
-            className="footer-links-section"
+            className="footer-links-grid"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <div className="footer-links-group">
-              <h4>Company</h4>
-              <ul>
-                <li><a href="#about">About Us</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#contact">Contact</a></li>
+            <div className="links-column">
+              <h4 className="column-title">Company</h4>
+              <ul className="links-list">
+                {companyLinks.map((link, index) => (
+                  <motion.li 
+                    key={index}
+                    whileHover={{ x: 5 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <a href={link.href}>
+                      <span className="link-arrow">→</span>
+                      {link.name}
+                    </a>
+                  </motion.li>
+                ))}
               </ul>
             </div>
-            
-            <div className="footer-links-group">
-              <h4>Services</h4>
-              <ul>
-                <li><a href="#services">Agentic Platforms</a></li>
-                <li><a href="#services">Digital Twin Solutions</a></li>
-                <li><a href="#services">SaaS Development</a></li>
-                <li><a href="#services">Web Applications</a></li>
+
+            <div className="links-column">
+              <h4 className="column-title">Services</h4>
+              <ul className="links-list">
+                {serviceLinks.map((link, index) => (
+                  <motion.li 
+                    key={index}
+                    whileHover={{ x: 5 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <a href={link.href}>
+                      <span className="link-arrow">→</span>
+                      {link.name}
+                    </a>
+                  </motion.li>
+                ))}
               </ul>
             </div>
-            
-            <div className="footer-links-group">
-              <h4>Legal</h4>
-              <ul>
-                {footerLinks.map((link, index) => (
-                  <li key={index}>
-                    <a href={link.href}>{link.name}</a>
-                  </li>
+
+            <div className="links-column">
+              <h4 className="column-title">Legal</h4>
+              <ul className="links-list">
+                {legalLinks.map((link, index) => (
+                  <motion.li 
+                    key={index}
+                    whileHover={{ x: 5 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <a href={link.href}>
+                      <span className="link-arrow">→</span>
+                      {link.name}
+                    </a>
+                  </motion.li>
                 ))}
               </ul>
             </div>
           </motion.div>
 
+          {/* Contact Section */}
           <motion.div 
-            className="footer-contact"
+            className="footer-contact-section"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
             viewport={{ once: true }}
           >
-            <h4>Get in Touch</h4>
-            <div className="contact-info">
-              <div className="contact-item">
-                <i className="fas fa-envelope"></i>
-                <a href="mailto:hello@craftelligence.tech">hello@craftelligence.tech</a>
-              </div>
-              <div className="contact-item">
-                <i className="fas fa-phone"></i>
-                <a href="tel:+919079971790">(+91) 9079971790</a>
-              </div>
-              <div className="contact-item">
-                <i className="fab fa-linkedin"></i>
-                <a href="https://www.linkedin.com/company/craftelligence" target="_blank" rel="noopener noreferrer">
-                  Craftelligence
-                </a>
-              </div>
-              <div className="contact-item">
-                <i className="fas fa-map-marker-alt"></i>
-                <span>Jaipur, Rajasthan, India</span>
-              </div>
-            </div>
+            <h4 className="contact-title">Get in Touch</h4>
             
-            <button 
-              className="cta-button"
-              onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })}
+            <div className="contact-details-list">
+              {contactDetails.map((detail, index) => (
+                <motion.div
+                  key={index}
+                  className="contact-detail-item"
+                  whileHover={{ x: 5 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="detail-icon">
+                    <i className={detail.icon}></i>
+                  </div>
+                  {detail.href ? (
+                    <a href={detail.href}>{detail.text}</a>
+                  ) : (
+                    <span>{detail.text}</span>
+                  )}
+                </motion.div>
+              ))}
+            </div>
+
+            <motion.button 
+              className="footer-cta-button"
+              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              Start Your Project
+              <span>Start Your Project</span>
               <i className="fas fa-arrow-right"></i>
-            </button>
+            </motion.button>
           </motion.div>
         </div>
 
+        {/* Footer Bottom */}
         <motion.div 
           className="footer-bottom"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
           viewport={{ once: true }}
         >
-          <div className="footer-bottom-content">
-            <p>&copy; {currentYear} Craftelligence. All rights reserved.</p>
+          <div className="footer-bottom-left">
+            <p className="copyright">
+              &copy; {currentYear} <span className="brand-highlight">Craftelligence</span>. All rights reserved.
+            </p>
+          </div>
+
+          <div className="footer-bottom-right">
+            <motion.button 
+              className={`theme-toggle-button ${theme}`}
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+              whileHover={{ scale: 1.1, rotate: 180 }}
+              whileTap={{ scale: 0.9 }}
+              transition={{ duration: 0.3 }}
+            >
+              <i className={theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'}></i>
+            </motion.button>
           </div>
         </motion.div>
       </div>
@@ -172,4 +293,4 @@ const Footer = () => {
   );
 };
 
-export default Footer; 
+export default Footer;

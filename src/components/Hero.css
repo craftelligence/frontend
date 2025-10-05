@@ -1,266 +1,277 @@
+/* =======================
+   Hero Section
+======================= */
 .hero {
-  background: var(--gradient-blue);
-  min-height: 100vh;
+  position: relative;
+  height: 100vh;
+  background: var(--dark-bg);
+  color: var(--dark-text);
   display: flex;
-  align-items: center;
-  position: relative;
+  flex-direction: column;
+  font-family: 'Inter', sans-serif;
+  padding: 0 2rem;
+  box-sizing: border-box;
   overflow: hidden;
+  text-align: center;
+  z-index: 0;
 }
 
-.hero-background {
+/* White grid background */
+.hero::after {
+  content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridMove 20s linear infinite;
+  z-index: 0;
+}
+
+@keyframes gridMove {
+  0%   { transform: translate(0, 0); opacity: 0.25; }
+  50%  { transform: translate(30px, 30px); opacity: 0.35; }
+  100% { transform: translate(60px, 60px); opacity: 0.25; }
+}
+
+/* Subtle moving green lines */
+.green-lines {
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(0, 255, 102, 0.06) 0, rgba(0, 255, 102, 0.06) 1px, transparent 1px, transparent 160px),
+    repeating-linear-gradient(0deg, rgba(0, 255, 102, 0.06) 0, rgba(0, 255, 102, 0.06) 1px, transparent 1px, transparent 160px);
+  background-size: 240px 240px;
+  animation: greenLinesMove 40s linear infinite;
   z-index: 1;
+  pointer-events: none;
 }
 
-.hero-particles {
-  position: relative;
-  width: 100%;
-  height: 100%;
+@keyframes greenLinesMove {
+  0% { background-position: 0 0, 0 0; }
+  100% { background-position: 240px 240px, 240px 240px; }
 }
 
-.particle {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  background: var(--electric-purple);
-  border-radius: 50%;
-  opacity: 0.3;
-}
-
-.hero-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  align-items: center;
+/* =======================
+   Main Hero Text
+======================= */
+.hero-main {
+  margin-top: 8rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
   position: relative;
   z-index: 2;
-}
-
-.hero-text {
-  color: var(--white);
 }
 
 .hero-title {
-  font-size: 4.5rem;
+  font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: 800;
-  line-height: 1.1;
-  margin-bottom: 2rem;
-  color: var(--white);
-}
-
-.gradient-text {
-  background: var(--gradient-purple);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  font-family: 'Space Grotesk', sans-serif;
 }
 
 .hero-subtitle {
-  font-size: 1.4rem;
-  color: #B8B8B8;
-  margin-bottom: 3rem;
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
   line-height: 1.6;
-  max-width: 500px;
+  color: var(--light-text);
+  margin-bottom: 1.5rem;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.hero-cta {
-  display: flex;
+/* CTA Button */
+.cta-button {
+  background: #00ff66;
+  border: 2px solid #00ff66;
+  border-radius: 8px;
+  padding: 12px 28px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #000000;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
-  font-size: 1.2rem;
-  padding: 20px 40px;
-}
-
-.hero-cta i {
-  transition: transform 0.3s ease;
-}
-
-.hero-cta:hover i {
-  transform: translateX(5px);
-}
-
-.hero-visual {
   position: relative;
-  height: 500px;
+  z-index: 2;
+}
+
+.cta-button:hover {
+  background: #00e65a;
+  border-color: #00e65a;
+  box-shadow: 0 4px 20px rgba(0, 255, 102, 0.4);
+  transform: translateY(-2px);
+}
+
+.cta-button i {
+  margin-left: 8px;
+}
+
+/* =======================
+   Hero Cards
+======================= */
+.hero-cards {
+  margin-top: 3rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-card {
+  position: relative;
+  background: var(--card-bg);
+  border: 1px solid var(--border-green-soft);
+  border-radius: 12px;
+  padding: 1.8rem 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.hero-card:hover {
+  border-color: var(--neon-green);
+  box-shadow: 0 0 25px rgba(0, 255, 102, 0.35);
+  transform: translateY(-4px);
+}
+
+.hero-card h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-top: 0.8rem;
+  margin-bottom: 0.6rem;
+  background: linear-gradient(135deg, #ffffff, #00ff66);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-card p {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--light-text);
+  margin-bottom: 1rem;
+}
+
+/* Card Icon */
+.card-icon {
+  font-size: 2rem;
+  color: #00ff66;
+  margin-bottom: 0.3rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.3s ease;
 }
 
-.floating-elements {
-  position: relative;
+.hero-card:hover .card-icon {
+  transform: translateY(-5px) scale(1.1);
+}
+
+/* Progress bar */
+.progress-bar {
   width: 100%;
-  height: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
 }
 
-.floating-card {
-  position: absolute;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 20px;
-  padding: 2rem;
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00ff66, #00cc52);
+  border-radius: 6px;
+}
+
+/* Graph */
+.graph {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  color: var(--white);
-  box-shadow: var(--shadow-light);
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 80px;
+  margin-bottom: 0.5rem;
+}
+
+.graph .bar {
+  width: 18%;
+  background: linear-gradient(180deg, #00ff66, rgba(0, 255, 102, 0.3));
+  border-radius: 4px;
+  transition: height 0.3s ease;
+}
+
+/* Stats */
+.stats {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.stat-box {
+  flex: 1;
+  background: var(--card-bg);
+  border: 1px solid var(--border-green-soft);
+  border-radius: 6px;
+  padding: 0.8rem;
+  text-align: center;
   transition: all 0.3s ease;
 }
 
-.floating-card:hover {
-  background: rgba(255, 255, 255, 0.15);
+.stat-box:hover {
+  border-color: var(--neon-green);
+  background: rgba(255, 255, 255, 0.08);
   transform: scale(1.05);
 }
 
-.floating-card i {
-  font-size: 2.5rem;
-  color: var(--electric-purple);
+.stat-box h4 {
+  font-size: 1.2rem;
+  color: #00ff66;
+  margin-bottom: 0.3rem;
 }
 
-.floating-card span {
-  font-weight: 600;
-  font-size: 1rem;
-  text-align: center;
+.stat-box p {
+  font-size: 0.8rem;
+  color: var(--muted-text);
 }
 
-.card-1 {
-  top: 20%;
-  left: 10%;
-  width: 150px;
-  height: 120px;
-}
-
-.card-2 {
-  top: 50%;
-  right: 15%;
-  width: 160px;
-  height: 130px;
-}
-
-.card-3 {
-  bottom: 20%;
-  left: 20%;
-  width: 140px;
-  height: 110px;
-}
-
-.scroll-indicator {
-  position: absolute;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: var(--white);
-  font-size: 1.5rem;
-  opacity: 0.7;
-  z-index: 2;
-  cursor: pointer;
-  transition: opacity 0.3s ease;
-}
-
-.scroll-indicator:hover {
-  opacity: 1;
-}
-
-/* Responsive Design */
+/* =======================
+   Responsive
+======================= */
 @media (max-width: 1024px) {
-  .hero-content {
-    grid-template-columns: 1fr;
-    text-align: center;
-    gap: 3rem;
-  }
-
-  .hero-title {
-    font-size: 3.5rem;
-  }
-
-  .hero-visual {
-    height: 400px;
-  }
-
-  .floating-card {
-    padding: 1.5rem;
-  }
-
-  .card-1, .card-2, .card-3 {
-    width: 120px;
-    height: 100px;
-  }
+  .hero-main { margin-top: 10rem; }
+  .hero-title { font-size: clamp(1.8rem, 4vw, 2.8rem); }
 }
 
 @media (max-width: 768px) {
-  .hero-title {
-    font-size: 2.8rem;
-  }
+  .hero-main { margin-top: 10rem; }
+  .hero { height: auto; padding-bottom: 4rem; }
 
-  .hero-subtitle {
-    font-size: 1.2rem;
-  }
+  /* stop bg animations for performance */
+  .hero::after, .green-lines { animation: none; opacity: 0.15; }
 
-  .hero-cta {
-    font-size: 1.1rem;
-    padding: 18px 35px;
-  }
-
-  .hero-visual {
-    height: 300px;
-  }
-
-  .floating-card {
-    padding: 1rem;
-  }
-
-  .floating-card i {
-    font-size: 2rem;
-  }
-
-  .floating-card span {
-    font-size: 0.9rem;
-  }
-
-  .card-1, .card-2, .card-3 {
-    width: 100px;
-    height: 80px;
-  }
+  .hero-main { margin-top: 10rem; }
+  .hero-title { font-size: 2rem; }
+  .hero-subtitle { font-size: 0.9rem; padding: 0 1rem; }
+  .cta-button { padding: 10px 20px; font-size: 0.9rem; }
+  .hero-cards { grid-template-columns: 1fr; gap: 1rem; }
 }
 
 @media (max-width: 480px) {
-  .hero-title {
-    font-size: 2.2rem;
-  }
-
-  .hero-subtitle {
-    font-size: 1rem;
-  }
-
-  .hero-cta {
-    font-size: 1rem;
-    padding: 15px 30px;
-  }
-
-  .hero-visual {
-    height: 250px;
-  }
-
-  .floating-card {
-    padding: 0.8rem;
-  }
-
-  .floating-card i {
-    font-size: 1.5rem;
-  }
-
-  .floating-card span {
-    font-size: 0.8rem;
-  }
-
-  .card-1, .card-2, .card-3 {
-    width: 80px;
-    height: 70px;
-  }
-} 
+  .hero-main { margin-top: 5.5rem; }
+  .hero-title { font-size: 1.6rem; }
+  .hero-subtitle { font-size: 0.85rem; }
+  .cta-button { padding: 8px 18px; font-size: 0.85rem; }
+  .card-icon { font-size: 1.6rem; }
+  .hero-card h3 { font-size: 1rem; }
+  .hero-card p { font-size: 0.85rem; }
+}

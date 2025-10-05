@@ -1,175 +1,349 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
 import './Services.css';
 
 const Services = () => {
-  const [isMobile, setIsMobile] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
-  
-  // Check if mobile on mount
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    // Force load after a delay for mobile
-    const timer = setTimeout(() => {
-      setIsLoaded(true);
-    }, 1000);
-    
-    return () => {
-      window.removeEventListener('resize', checkMobile);
-      clearTimeout(timer);
-    };
-  }, []);
-
-  const [ref, inView] = useInView({
-    threshold: 0.05, // Even lower threshold
-    triggerOnce: true,
-    rootMargin: '0px 0px -50px 0px', // Smaller margin
-    fallbackInView: true // Fallback for older browsers
-  });
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [direction, setDirection] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const autoPlayRef = useRef(null);
 
   const services = [
     {
       icon: 'fas fa-robot',
       title: 'Agentic Platforms',
-      description: 'Build multi-agent LLM-powered systems that work together to solve complex problems.',
+      subtitle: 'Multi-Agent AI Systems',
+      description: 'Build multi-agent LLM-powered systems that work together to solve complex problems autonomously.',
       features: ['Multi-agent coordination', 'LLM integration', 'Intelligent task execution', 'Scalable architecture'],
-      color: '#A259FF'
+      badge: 'AI-Powered',
+      imageUrl: '/Agentic Platforms.jpg',
+      themeColor: '#00ff66',
+      bgGradient: 'linear-gradient(135deg, rgba(0, 255, 102, 0.15), rgba(0, 204, 82, 0.1))',
+      glowColor: 'rgba(0, 255, 102, 0.3)'
+    },
+    {
+      icon: 'fas fa-brain',
+      title: 'AI & Machine Learning',
+      subtitle: 'Intelligent Automation',
+      description: 'Custom AI models and ML solutions for predictive analytics, computer vision, NLP, and intelligent automation.',
+      features: ['Custom model training', 'Neural networks', 'Predictive analytics', 'Computer vision & NLP'],
+      badge: 'Advanced',
+      imageUrl: '/AI:ML.png',
+      themeColor: '#00d4ff',
+      bgGradient: 'linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 170, 255, 0.1))',
+      glowColor: 'rgba(0, 212, 255, 0.3)'
+    },
+    {
+      icon: 'fas fa-server',
+      title: 'MCP Servers',
+      subtitle: 'Model Context Protocol',
+      description: 'Build and deploy Model Context Protocol servers that enable seamless AI integration and context-aware interactions.',
+      features: ['Context-aware AI', 'Protocol implementation', 'Server deployment', 'AI ecosystem integration'],
+      badge: 'New',
+      imageUrl: '/mcp servers.png',
+      themeColor: '#00ffaa',
+      bgGradient: 'linear-gradient(135deg, rgba(0, 255, 170, 0.15), rgba(0, 204, 136, 0.1))',
+      glowColor: 'rgba(0, 255, 170, 0.3)'
     },
     {
       icon: 'fas fa-cube',
       title: 'Digital Twin Solutions',
-      description: 'Real-time system modeling & insights for operational optimization.',
+      subtitle: 'Real-Time Modeling',
+      description: 'Real-time system modeling and insights for operational optimization and predictive maintenance.',
       features: ['Real-time monitoring', 'Predictive analytics', 'System simulation', 'Performance optimization'],
-      color: '#8B5CF6'
+      badge: 'IoT',
+      imageUrl: '/digital_twin_solution.webp',
+      themeColor: '#00e5ff',
+      bgGradient: 'linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(0, 183, 204, 0.1))',
+      glowColor: 'rgba(0, 229, 255, 0.3)'
     },
     {
       icon: 'fas fa-cloud',
-      title: 'SaaS Product Development',
-      description: 'Full cloud-native applications built for scale and performance.',
+      title: 'SaaS Development',
+      subtitle: 'Cloud-Native Products',
+      description: 'Full-stack cloud-native applications built for scale, performance, and global reach.',
       features: ['Cloud-native architecture', 'Microservices', 'Auto-scaling', 'High availability'],
-      color: '#7C3AED'
+      badge: 'Scalable',
+      imageUrl: '/saas.png',
+      themeColor: '#00d9ff',
+      bgGradient: 'linear-gradient(135deg, rgba(0, 217, 255, 0.15), rgba(0, 174, 204, 0.1))',
+      glowColor: 'rgba(0, 217, 255, 0.3)'
+    },
+    {
+      icon: 'fas fa-chart-line',
+      title: 'Data Analytics & BI',
+      subtitle: 'Data-Driven Insights',
+      description: 'Transform raw data into actionable insights with advanced analytics, dashboards, and business intelligence.',
+      features: ['Data visualization', 'Real-time analytics', 'Custom dashboards', 'Reporting automation'],
+      badge: 'Insights',
+      imageUrl: '/da_bi.webp',
+      themeColor: '#00ffcc',
+      bgGradient: 'linear-gradient(135deg, rgba(0, 255, 204, 0.15), rgba(0, 204, 163, 0.1))',
+      glowColor: 'rgba(0, 255, 204, 0.3)'
     },
     {
       icon: 'fas fa-code',
-      title: 'Software & Web Applications',
-      description: 'Custom backend, APIs, admin panels, and web applications.',
+      title: 'Custom Software',
+      subtitle: 'Tailored Solutions',
+      description: 'Custom backend systems, APIs, admin panels, and web applications designed for your specific needs.',
       features: ['Custom APIs', 'Admin dashboards', 'Web applications', 'Database design'],
-      color: '#6D28D9'
+      badge: 'Custom',
+      imageUrl: '/Custom_Software.png',
+      themeColor: '#00ff88',
+      bgGradient: 'linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 204, 109, 0.1))',
+      glowColor: 'rgba(0, 255, 136, 0.3)'
     }
   ];
 
-  // Simplified animations for mobile
-  const mobileAnimations = {
-    initial: { opacity: 0 },
-    animate: { opacity: 1 },
-    transition: { duration: 0.3 }
+  useEffect(() => {
+    if (isAutoPlaying) {
+      autoPlayRef.current = setInterval(() => {
+        setDirection(1);
+        setCurrentSlide((prev) => (prev + 1) % services.length);
+      }, 5000);
+    }
+
+    return () => {
+      if (autoPlayRef.current) {
+        clearInterval(autoPlayRef.current);
+      }
+    };
+  }, [isAutoPlaying, services.length]);
+
+  const nextSlide = () => {
+    setDirection(1);
+    setCurrentSlide((prev) => (prev + 1) % services.length);
+    // Don't stop auto-play when using navigation buttons
   };
 
-  const desktopAnimations = {
-    initial: { opacity: 0, y: 30 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6 }
+  const prevSlide = () => {
+    setDirection(-1);
+    setCurrentSlide((prev) => (prev - 1 + services.length) % services.length);
+    // Don't stop auto-play when using navigation buttons
   };
 
-  const shouldAnimate = inView || isLoaded || isMobile;
+  const goToSlide = (index) => {
+    setDirection(index > currentSlide ? 1 : -1);
+    setCurrentSlide(index);
+    // Don't stop auto-play when clicking dots
+  };
+
+  const slideVariants = {
+    enter: (direction) => ({
+      x: direction > 0 ? 1000 : -1000,
+      opacity: 0,
+      scale: 0.9
+    }),
+    center: {
+      zIndex: 1,
+      x: 0,
+      opacity: 1,
+      scale: 1
+    },
+    exit: (direction) => ({
+      zIndex: 0,
+      x: direction < 0 ? 1000 : -1000,
+      opacity: 0,
+      scale: 0.9
+    })
+  };
+
+  const FloatingCard = ({ service, index }) => {
+    const positions = [
+      { left: '5%', top: '10%' },
+      { left: '85%', top: '15%' },
+      { left: '10%', top: '75%' },
+      { left: '80%', top: '70%' },
+      { left: '15%', top: '40%' },
+      { left: '75%', top: '45%' },
+      { left: '50%', top: '5%' },
+    ];
+
+    const pos = positions[index % positions.length];
+    const randomDuration = 15 + Math.random() * 10;
+    const randomDelay = Math.random() * 5;
+
+    return (
+      <motion.div
+        className="floating-card"
+        style={{
+          left: pos.left,
+          top: pos.top,
+        }}
+        animate={{
+          y: [0, -40, 0],
+          rotate: [-8, 8, -8],
+          scale: [1, 1.1, 1],
+        }}
+        transition={{
+          duration: randomDuration,
+          repeat: Infinity,
+          delay: randomDelay,
+          ease: 'easeInOut',
+        }}
+      >
+        <div className="floating-card-inner" style={{ background: service.bgGradient, borderColor: service.themeColor }}>
+          <div className="floating-card-icon" style={{ color: service.themeColor }}>
+            <i className={service.icon}></i>
+          </div>
+          <div className="floating-card-title">{service.title}</div>
+          <div className="floating-card-badge" style={{ color: service.themeColor, borderColor: service.themeColor }}>
+            {service.badge}
+          </div>
+        </div>
+      </motion.div>
+    );
+  };
+
+  const currentService = services[currentSlide];
 
   return (
-    <section id="services" className="services section" ref={ref}>
-      <div className="services-background">
-        <div className="services-grid-pattern"></div>
-      </div>
-      
-      <div className="container">
-        <AnimatePresence>
-          {shouldAnimate && (
-            <motion.h2 
-              className="section-title"
-              {...(isMobile ? mobileAnimations : desktopAnimations)}
-            >
-              What We Do
-            </motion.h2>
-          )}
-        </AnimatePresence>
+    <section id="services" className="services-section">
+      <div className="services-bg-grid"></div>
 
-        <div className="services-grid">
-          {services.map((service, index) => (
-            <AnimatePresence key={index}>
-              {shouldAnimate && (
-                <motion.div
-                  className="service-card"
-                  {...(isMobile ? mobileAnimations : {
-                    ...desktopAnimations,
-                    transition: { duration: 0.6, delay: index * 0.05 }
-                  })}
-                  whileHover={!isMobile ? { 
-                    y: -5,
-                    boxShadow: '0 20px 40px rgba(162, 89, 255, 0.15)'
-                  } : {}}
-                >
-                  <div className="service-header">
-                    <div className="service-icon" style={{ backgroundColor: service.color }}>
-                      <i className={service.icon}></i>
-                    </div>
-                    <h3>{service.title}</h3>
-                  </div>
-                  
-                  <p className="service-description">{service.description}</p>
-                  
-                  <div className="service-features">
-                    <h4>Key Features:</h4>
-                    <ul>
-                      {service.features.map((feature, featureIndex) => (
-                        <li key={featureIndex}>
-                          <i className="fas fa-check"></i>
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  
-                  <div className="service-cta">
-                    <button className="cta-button secondary">
-                      Learn More
-                      <i className="fas fa-arrow-right"></i>
-                    </button>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          ))}
+      {services.map((service, index) => (
+        <FloatingCard key={`float-${index}`} service={service} index={index} />
+      ))}
+
+      <div className="services-container">
+        <div className="services-header">
+          <span className="services-label">Our Services</span>
+          <h2 className="services-main-title">What We Do</h2>
+          <p className="services-intro">
+            Cutting-edge technology solutions designed to transform your business and drive innovation
+          </p>
         </div>
 
-        <AnimatePresence>
-          {shouldAnimate && (
-            <motion.div 
-              className="services-cta"
-              {...(isMobile ? mobileAnimations : {
-                ...desktopAnimations,
-                transition: { duration: 0.6, delay: 0.3 }
-              })}
+        <div className="carousel-wrapper">
+          <div className="carousel-main">
+            <button 
+              className="autoplay-toggle" 
+              onClick={() => setIsAutoPlaying(!isAutoPlaying)}
+              style={{ borderColor: currentService.themeColor }}
             >
-              <h3>Ready to Build Something Amazing?</h3>
-              <p>Let's discuss your project and see how we can help you scale.</p>
-              <button 
-                className="cta-button"
-                onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })}
+              {isAutoPlaying ? (
+                <div className="autoplay-pulse" style={{ background: currentService.themeColor }}></div>
+              ) : (
+                <div className="autoplay-paused"></div>
+              )}
+              <span style={{ color: currentService.themeColor }}>{isAutoPlaying ? 'Auto-playing' : 'Paused'}</span>
+            </button>
+
+            <button 
+              className="nav-button prev" 
+              onClick={prevSlide}
+              style={{ borderColor: currentService.themeColor, color: currentService.themeColor }}
+            >
+              <i className="fas fa-chevron-left"></i>
+            </button>
+            <button 
+              className="nav-button next" 
+              onClick={nextSlide}
+              style={{ borderColor: currentService.themeColor, color: currentService.themeColor }}
+            >
+              <i className="fas fa-chevron-right"></i>
+            </button>
+
+            <AnimatePresence initial={false} custom={direction} mode="wait">
+              <motion.div
+                key={currentSlide}
+                custom={direction}
+                variants={slideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{
+                  x: { type: 'spring', stiffness: 300, damping: 30 },
+                  opacity: { duration: 0.3 },
+                  scale: { duration: 0.3 }
+                }}
+                className="service-card"
+                style={{ borderColor: currentService.themeColor, boxShadow: `0 20px 60px ${currentService.glowColor}` }}
               >
-                Start Your Project
-                <i className="fas fa-rocket"></i>
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                <div className="card-left" style={{ background: currentService.bgGradient }}>
+                  <div className="card-image-container">
+                    <img src={currentService.imageUrl} alt={currentService.title} className="card-main-image" />
+                    <div className="card-image-overlay" style={{ background: currentService.bgGradient }}></div>
+                  </div>
+                  <div className="card-icon-main" style={{ color: currentService.themeColor }}>
+                    <i className={currentService.icon}></i>
+                  </div>
+                  <div className="card-badge-main" style={{ color: currentService.themeColor, borderColor: currentService.themeColor }}>
+                    {currentService.badge}
+                  </div>
+                </div>
+
+                <div className="card-right">
+                  <h3 className="card-title">{currentService.title}</h3>
+                  <div className="card-subtitle" style={{ color: currentService.themeColor }}>{currentService.subtitle}</div>
+                  <p className="card-description">{currentService.description}</p>
+
+                  <div className="card-features">
+                    {currentService.features.map((feature, idx) => (
+                      <motion.div
+                        key={idx}
+                        className="feature-item"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.1 + 0.2 }}
+                        style={{ 
+                          background: `${currentService.themeColor}15`,
+                          borderColor: `${currentService.themeColor}40`
+                        }}
+                      >
+                        <div className="feature-check" style={{ background: currentService.themeColor }}>
+                          <i className="fas fa-check"></i>
+                        </div>
+                        <span>{feature}</span>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          <div className="dots-container">
+            {services.map((service, index) => (
+              <button
+                key={index}
+                className={`dot ${index === currentSlide ? 'active' : ''}`}
+                onClick={() => goToSlide(index)}
+                style={{
+                  background: index === currentSlide ? '#00ff66' : 'rgba(0, 255, 102, 0.6)',
+                  borderColor: index === currentSlide ? '#00ff66' : 'rgba(0, 255, 102, 0.8)',
+                  minWidth: '12px',
+                  minHeight: '12px'
+                }}
+              />
+            ))}
+          </div>
+        </div>
+
+        <motion.div 
+          className="services-cta"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="cta-content">
+            <h3 className="cta-title">Ready to Build Something Amazing?</h3>
+            <p className="cta-description">
+              Let's discuss your project and see how we can help you scale.
+            </p>
+            <button 
+              className="cta-button"
+              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              <span>Start Your Project</span>
+              <i className="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
 };
 
-export default Services; 
+export default Services;

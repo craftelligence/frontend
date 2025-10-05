@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 /* Global Styles */
 * {
   margin: 0;
@@ -12,28 +13,47 @@ html {
 body {
   font-family: 'Inter', sans-serif;
   line-height: 1.6;
-  color: #333;
+  color: var(--dark-text);
+  background: var(--dark-bg);
   overflow-x: hidden;
 }
 
 /* Color Variables */
 :root {
-  --midnight-blue: #1A1D3D;
-  --electric-purple: #A259FF;
-  --light-gray: #F5F5F5;
-  --white: #FFFFFF;
-  --dark-text: #1A1A1A;
-  --light-text: #666666;
-  --gradient-purple: linear-gradient(135deg, #A259FF 0%, #8B5CF6 100%);
-  --gradient-blue: linear-gradient(135deg, #1A1D3D 0%, #2D3250 100%);
-  --gradient-light: linear-gradient(135deg, #F5F5F5 0%, #FFFFFF 100%);
-  --shadow-light: 0 10px 30px rgba(0, 0, 0, 0.1);
-  --shadow-medium: 0 20px 40px rgba(0, 0, 0, 0.15);
-  --shadow-heavy: 0 30px 60px rgba(0, 0, 0, 0.2);
+  --neon-green: #00ff66;
+  --dark-bg: #0a0a0a;
+  --dark-surface: #111111;
+  --card-bg: #0f0f0f;
+  --light-gray: #1a1a1a;
+  --white: #ffffff;
+  --dark-text: #eaeaea;
+  --light-text: rgba(255, 255, 255, 0.75);
+  --muted-text: rgba(255, 255, 255, 0.6);
+  --gradient-green: linear-gradient(135deg, #00ff66 0%, #00e65a 100%);
+  --border-green: rgba(0, 255, 102, 0.25);
+  --border-green-soft: rgba(0, 255, 102, 0.15);
+  --shadow-light: 0 5px 15px rgba(0, 255, 102, 0.15);
+  --shadow-medium: 0 10px 25px rgba(0, 255, 102, 0.25);
+  --shadow-heavy: 0 15px 40px rgba(0, 255, 102, 0.3);
+}
+
+/* Light Theme Overrides */
+:root[data-theme="light"] {
+  --dark-bg: #ffffff;
+  --dark-surface: #ffffff;
+  --card-bg: #ffffff;
+  --light-gray: #f5f5f5;
+  --white: #000000; /* not used as text directly */
+  --dark-text: #1a1a1a;
+  --light-text: rgba(0, 0, 0, 0.7);
+  --muted-text: rgba(0, 0, 0, 0.55);
+  --border-green: rgba(0, 200, 90, 0.25);
+  --border-green-soft: rgba(0, 200, 90, 0.15);
 }
 
 .App {
   min-height: 100vh;
+  background: var(--dark-bg);
 }
 
 /* Section Styles */
@@ -45,10 +65,10 @@ body {
 
 .section-title {
   text-align: center;
-  font-size: 3.5rem;
+  font-size: 3.2rem;
   font-weight: 800;
   margin-bottom: 4rem;
-  background: var(--gradient-purple);
+  background: var(--gradient-green);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -63,7 +83,7 @@ body {
   transform: translateX(-50%);
   width: 80px;
   height: 4px;
-  background: var(--gradient-purple);
+  background: var(--gradient-green);
   border-radius: 2px;
 }
 
@@ -73,54 +93,41 @@ body {
   padding: 0 2rem;
 }
 
-/* Button Styles */
+/* =======================
+   CTA Buttons
+======================= */
 .cta-button {
   display: inline-block;
-  background: var(--gradient-purple);
-  color: var(--white);
-  padding: 18px 36px;
+  background: var(--neon-green);
+  color: var(--dark-bg);
+  padding: 16px 34px;
   text-decoration: none;
   border-radius: 50px;
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   transition: all 0.3s ease;
   border: none;
   cursor: pointer;
   position: relative;
-  overflow: hidden;
   z-index: 1;
 }
 
-.cta-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, #8B5CF6 0%, #A259FF 100%);
-  transition: left 0.3s ease;
-  z-index: -1;
-}
-
-.cta-button:hover::before {
-  left: 0;
-}
-
 .cta-button:hover {
+  background: #00e65a;
   transform: translateY(-3px);
   box-shadow: var(--shadow-medium);
 }
 
 .cta-button.secondary {
   background: transparent;
-  border: 3px solid var(--electric-purple);
-  color: var(--electric-purple);
+  border: 2px solid var(--neon-green);
+  color: var(--neon-green);
 }
 
 .cta-button.secondary:hover {
-  background: var(--electric-purple);
-  color: var(--white);
+  background: var(--neon-green);
+  color: var(--dark-bg);
+  box-shadow: var(--shadow-light);
 }
 
 /* Animation Classes */
@@ -135,38 +142,37 @@ body {
   transform: translateY(0);
 }
 
-/* Mobile Performance Optimizations */
+/* =======================
+   Mobile Performance Optimizations
+======================= */
 @media (max-width: 768px) {
-  /* Reduce animation complexity on mobile */
   .section {
     padding: 80px 0;
   }
-  
+
   .section-title {
-    font-size: 2.5rem;
-    margin-bottom: 3rem;
+    font-size: 2.4rem;
+    margin-bottom: 2.5rem;
   }
-  
+
   .container {
     padding: 0 1rem;
   }
-  
+
   .cta-button {
-    padding: 15px 30px;
+    padding: 14px 28px;
     font-size: 1rem;
   }
-  
-  /* Disable complex animations on mobile for better performance */
+
   .cta-button:hover {
     transform: none;
     box-shadow: var(--shadow-light);
   }
-  
-  /* Reduce shadow complexity on mobile */
+
   :root {
-    --shadow-light: 0 5px 15px rgba(0, 0, 0, 0.1);
-    --shadow-medium: 0 10px 25px rgba(0, 0, 0, 0.15);
-    --shadow-heavy: 0 15px 35px rgba(0, 0, 0, 0.2);
+    --shadow-light: 0 4px 12px rgba(0, 255, 102, 0.15);
+    --shadow-medium: 0 8px 20px rgba(0, 255, 102, 0.2);
+    --shadow-heavy: 0 12px 30px rgba(0, 255, 102, 0.25);
   }
 }
 
@@ -174,18 +180,19 @@ body {
   .section-title {
     font-size: 2rem;
   }
-  
-  /* Further reduce animations on small screens */
+
   .cta-button {
     transition: all 0.2s ease;
   }
-  
+
   .cta-button:hover {
     transform: none;
   }
 }
 
-/* Loading Animation */
+/* =======================
+   Loading Animation
+======================= */
 .loading {
   opacity: 0;
   transition: opacity 0.5s ease;
@@ -195,33 +202,48 @@ body {
   opacity: 1;
 }
 
-/* Custom Scrollbar */
+/* =======================
+   Custom Scrollbar
+======================= */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--light-gray);
+  background: var(--dark-bg);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--gradient-purple);
+  background: var(--gradient-green);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--electric-purple);
+  background: var(--neon-green);
 }
 
-/* Reduce motion for users who prefer it */
+/* =======================
+   Reduce motion
+======================= */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  
+
   .cta-button:hover {
     transform: none;
   }
-} 
+}
+
+/* Heading Font (Space Grotesk) */
+h1,
+h2,
+h3,
+.section-title,
+.hero-title,
+.logo-text h2,
+.footer-logo h3 {
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+}

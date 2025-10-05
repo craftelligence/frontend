@@ -1,133 +1,120 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
 import './Contact.css';
 
 const Contact = () => {
-  const [ref, inView] = useInView({
-    threshold: 0.1,
-    triggerOnce: true,
-    rootMargin: '0px 0px -100px 0px'
-  });
+  const [inView, setInView] = useState(false);
+  const sectionRef = useRef(null);
 
-  const [formData, setFormData] = useState({
-    subject: '',
-    email: '',
-    message: ''
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null);
-  const [errors, setErrors] = useState({});
+  // REPLACE THIS WITH YOUR ACTUAL CALENDLY LINK
+  const calendlyUrl = "https://calendly.com/ajay-craftelligence/30min";
 
-  const validateForm = () => {
-    const newErrors = {};
-    
-    if (!formData.subject.trim()) {
-      newErrors.subject = 'Subject is required';
-    } else if (formData.subject.length > 100) {
-      newErrors.subject = 'Subject must be under 100 characters';
-    }
-    
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-    
-    if (!formData.message.trim()) {
-      newErrors.message = 'Message is required';
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  useEffect(() => {
+    // Intersection Observer for scroll animations
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setInView(true);
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+      }
+    );
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
+    const currentSectionRef = sectionRef.current;
+    if (currentSectionRef) {
+      observer.observe(currentSectionRef);
     }
-  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
-    
-    setIsSubmitting(true);
-    setSubmitStatus(null);
+    return () => {
+      if (currentSectionRef) {
+        observer.unobserve(currentSectionRef);
+      }
+    };
+  }, []);
 
-    try {
-      // Create mailto link with proper formatting
-      const mailtoLink = `mailto:hello@craftelligence.tech?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(`From: ${formData.email}\n\nMessage:\n${formData.message}`)}`;
-      
-      // Open default email client
-      window.location.href = mailtoLink;
-      
-      // Show success message
-      setSubmitStatus('success');
-      setFormData({ subject: '', email: '', message: '' });
-      
-      // Reset status after 5 seconds
-      setTimeout(() => setSubmitStatus(null), 5000);
-      
-    } catch (error) {
-      console.error('Error sending email:', error);
-      setSubmitStatus('error');
-      
-      // Reset status after 5 seconds
-      setTimeout(() => setSubmitStatus(null), 5000);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  useEffect(() => {
+    // Load Calendly widget script
+    const script = document.createElement('script');
+    script.src = 'https://assets.calendly.com/assets/external/widget.js';
+    script.async = true;
+    document.body.appendChild(script);
+
+    // Load Calendly CSS
+    const link = document.createElement('link');
+    link.href = 'https://assets.calendly.com/assets/external/widget.css';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+
+    return () => {
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+      if (document.head.contains(link)) {
+        document.head.removeChild(link);
+      }
+    };
+  }, []);
 
   const contactInfo = [
     {
       icon: 'fas fa-envelope',
       title: 'Email',
       value: 'hello@craftelligence.tech',
-      link: 'mailto:hello@craftelligence.tech'
+      link: 'mailto:hello@craftelligence.tech',
     },
     {
       icon: 'fas fa-phone',
       title: 'Phone',
       value: '(+91) 9079971790',
-      link: 'tel:+919079971790'
+      link: 'tel:+919079971790',
     },
     {
       icon: 'fab fa-linkedin',
       title: 'LinkedIn',
       value: 'Craftelligence',
-      link: 'https://www.linkedin.com/company/craftelligence'
+      link: 'https://www.linkedin.com/company/craftelligence',
     },
     {
       icon: 'fas fa-map-marker-alt',
       title: 'Headquarters',
       value: 'Jaipur, Rajasthan, India',
-      link: null
+      link: null,
     }
   ];
 
   return (
-    <section id="contact" className="contact section" ref={ref}>
+    <section id="contact" className="contact section" ref={sectionRef}>
       <div className="contact-background">
-        <div className="contact-pattern"></div>
+        <div className="animated-grid"></div>
+        <div className="gradient-orbs">
+          <div className="orb orb-1"></div>
+          <div className="orb orb-2"></div>
+          <div className="orb orb-3"></div>
+        </div>
+        <div className="connection-lines">
+          <svg className="lines-svg">
+            <line className="line line-1" x1="10%" y1="20%" x2="90%" y2="80%" />
+            <line className="line line-2" x1="90%" y1="20%" x2="10%" y2="80%" />
+            <line className="line line-3" x1="50%" y1="10%" x2="50%" y2="90%" />
+          </svg>
+        </div>
+        <div className="floating-dots">
+          <span className="dot dot-1"></span>
+          <span className="dot dot-2"></span>
+          <span className="dot dot-3"></span>
+          <span className="dot dot-4"></span>
+          <span className="dot dot-5"></span>
+          <span className="dot dot-6"></span>
+        </div>
       </div>
-      
+
       <div className="container">
-        <motion.h2 
+        <motion.h2
           className="section-title"
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -136,18 +123,27 @@ const Contact = () => {
           Let's Connect
         </motion.h2>
 
+        <motion.p
+          className="section-subtitle"
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          Ready to build something amazing? Schedule a meeting or reach out directly.
+        </motion.p>
+
         <div className="contact-content">
-          <motion.div 
-            className="contact-info"
+          <motion.div
+            className="contact-info-section"
             initial={{ opacity: 0, x: -30 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
           >
             <div className="contact-intro">
-              <h3>Ready to Build Something Amazing?</h3>
+              <h3>Get in Touch</h3>
               <p>
-                Whether you have a specific project in mind or just want to explore possibilities, 
-                we're here to help you bring your vision to life.
+                Whether you have a specific project in mind or just want to explore
+                possibilities, we're here to help you bring your vision to life.
               </p>
             </div>
 
@@ -158,139 +154,56 @@ const Contact = () => {
                   className="contact-item"
                   initial={{ opacity: 0, y: 20 }}
                   animate={inView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
-                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
+                  whileHover={{ scale: 1.03, y: -5 }}
                 >
                   <div className="contact-icon">
-                    <i className={info.icon}></i>
+                    <i className={info.icon} style={{ color: info.iconColor }}></i>
                   </div>
                   <div className="contact-text">
                     <h4>{info.title}</h4>
                     {info.link ? (
-                      <a href={info.link} target="_blank" rel="noopener noreferrer">
+                      <a href={info.link} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--dark-text)' }}>
                         {info.value}
                       </a>
                     ) : (
-                      <p>{info.value}</p>
+                      <p style={{ color: 'var(--dark-text)' }}>{info.value}</p>
                     )}
                   </div>
                 </motion.div>
               ))}
             </div>
 
-            <div className="contact-cta">
-              <button className="cta-button secondary">
-                <i className="fas fa-calendar-alt"></i>
-                Schedule a Call
-              </button>
-            </div>
+            <motion.div
+              className="contact-cta-section"
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: 0.8 }}
+            >
+              <div className="availability-badge">
+                <div className="pulsing-dot"></div>
+                <span style={{ color: 'var(--dark-text)' }}>Available for new projects</span>
+              </div>
+            </motion.div>
           </motion.div>
 
-          <motion.div 
-            className="contact-form-section"
+          <motion.div
+            className="calendly-section"
             initial={{ opacity: 0, x: 30 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
           >
-            <div className="contact-form">
-              <h3>Send us a Message</h3>
-              <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                  <label htmlFor="subject">
-                    Subject <span className="required">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="subject"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleInputChange}
-                    required
-                    maxLength={100}
-                    placeholder="Brief subject of your message"
-                    className={errors.subject ? 'error' : ''}
-                  />
-                  {errors.subject && <span className="error-message">{errors.subject}</span>}
-                  <span className="char-count">{formData.subject.length}/100</span>
-                </div>
-                
-                <div className="form-group">
-                  <label htmlFor="email">
-                    Email <span className="required">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                    placeholder="your.email@example.com"
-                    className={errors.email ? 'error' : ''}
-                  />
-                  {errors.email && <span className="error-message">{errors.email}</span>}
-                </div>
-                
-                <div className="form-group">
-                  <label htmlFor="message">
-                    Message <span className="required">*</span>
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    required
-                    rows="5"
-                    placeholder="Tell us about your project..."
-                    className={errors.message ? 'error' : ''}
-                  ></textarea>
-                  {errors.message && <span className="error-message">{errors.message}</span>}
-                </div>
-                
-                <button 
-                  type="submit" 
-                  className="cta-button"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <i className="fas fa-spinner fa-spin"></i>
-                      Opening Email...
-                    </>
-                  ) : (
-                    <>
-                      Send Message
-                      <i className="fas fa-paper-plane"></i>
-                    </>
-                  )}
-                </button>
-              </form>
+            <div className="calendly-card">
+              <div className="calendly-header">
+                <i className="fas fa-calendar-check"></i>
+                <h3>Schedule a Meeting</h3>
+                <p>Pick a time that works best for you</p>
+              </div>
 
-              {submitStatus === 'success' && (
-                <motion.div 
-                  className="success-message"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  <i className="fas fa-check-circle"></i>
-                  <div>
-                    <p><strong>Email client opened!</strong></p>
-                    <p>Your default email application should now open with a pre-filled message. Please review and send the email.</p>
-                  </div>
-                </motion.div>
-              )}
-
-              {submitStatus === 'error' && (
-                <motion.div 
-                  className="error-message"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  <i className="fas fa-exclamation-circle"></i>
-                  <p>There was an error opening your email client. Please try again or contact us directly at hello@craftelligence.tech</p>
-                </motion.div>
-              )}
+              <div
+                className="calendly-inline-widget"
+                data-url={calendlyUrl}
+              ></div>
             </div>
           </motion.div>
         </div>
@@ -299,4 +212,4 @@ const Contact = () => {
   );
 };
 
-export default Contact; 
+export default Contact;

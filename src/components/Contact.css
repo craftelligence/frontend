@@ -1,344 +1,483 @@
 .contact {
-  background: var(--white);
   position: relative;
+  background: var(--dark-bg);
+  min-height: 100vh;
+  padding: 6rem 0;
+  overflow: hidden;
 }
 
+:root[data-theme="light"] .contact {
+  background: var(--light-bg);
+}
+
+/* Animated Background */
 .contact-background {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
 }
 
-.contact-pattern {
+/* Animated Grid Pattern */
+.animated-grid {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background-image: 
-    linear-gradient(45deg, rgba(162, 89, 255, 0.05) 25%, transparent 25%),
-    linear-gradient(-45deg, rgba(162, 89, 255, 0.05) 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, rgba(162, 89, 255, 0.05) 75%),
-    linear-gradient(-45deg, transparent 75%, rgba(162, 89, 255, 0.05) 75%);
-  background-size: 20px 20px;
-  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
-  opacity: 0.3;
+    linear-gradient(rgba(0, 255, 102, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 102, 0.05) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridFloat 20s linear infinite;
+  opacity: 0.4;
 }
 
-.contact-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 5rem;
+@keyframes gridFloat {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(60px, 60px); }
+}
+
+/* Gradient Orbs */
+.gradient-orbs {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+  animation: orbFloat 20s ease-in-out infinite;
+}
+
+.orb-1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #00ff66, transparent);
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.orb-2 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #00cc52, transparent);
+  bottom: 10%;
+  right: 10%;
+  animation-delay: 7s;
+}
+
+.orb-3 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, #00ff66, transparent);
+  top: 50%;
+  left: 50%;
+  animation-delay: 14s;
+}
+
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(50px, -50px) scale(1.1); }
+  66% { transform: translate(-50px, 50px) scale(0.9); }
+}
+
+/* Connection Lines */
+.connection-lines {
+  position: absolute;
+  inset: 0;
+}
+
+.lines-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.line {
+  stroke: #00ff66;
+  stroke-width: 1;
+  opacity: 0;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: drawLine 8s ease-in-out infinite;
+}
+
+.line-1 {
+  animation-delay: 0s;
+}
+
+.line-2 {
+  animation-delay: 2.5s;
+}
+
+.line-3 {
+  animation-delay: 5s;
+}
+
+@keyframes drawLine {
+  0%, 100% { 
+    stroke-dashoffset: 1000; 
+    opacity: 0;
+  }
+  10%, 90% { 
+    opacity: 0.2;
+  }
+  50% { 
+    stroke-dashoffset: 0; 
+    opacity: 0.3;
+  }
+}
+
+/* Floating Dots */
+.floating-dots {
+  position: absolute;
+  inset: 0;
+}
+
+.dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #00ff66;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(0, 255, 102, 0.6);
+  animation: dotFloat 15s ease-in-out infinite;
+}
+
+.dot-1 {
+  top: 20%;
+  left: 15%;
+  animation-delay: 0s;
+}
+
+.dot-2 {
+  top: 60%;
+  left: 25%;
+  animation-delay: 2s;
+}
+
+.dot-3 {
+  top: 40%;
+  right: 20%;
+  animation-delay: 4s;
+}
+
+.dot-4 {
+  bottom: 30%;
+  right: 15%;
+  animation-delay: 6s;
+}
+
+.dot-5 {
+  top: 70%;
+  left: 60%;
+  animation-delay: 8s;
+}
+
+.dot-6 {
+  top: 25%;
+  right: 40%;
+  animation-delay: 10s;
+}
+
+@keyframes dotFloat {
+  0%, 100% { 
+    transform: translate(0, 0) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  50% { 
+    transform: translate(100px, -100px) scale(1.5);
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 1;
+  }
+}
+
+/* Content Container */
+.container {
   position: relative;
   z-index: 2;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
 }
 
-.contact-info {
+/* Section Title */
+.section-title {
+  font-size: 4rem;
+  font-weight: 800;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #00ff66, #00cc52);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.section-subtitle {
+  font-size: 1.3rem;
+  color: #a0a0a0;
+  text-align: center;
+  margin-bottom: 4rem;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Contact Content Layout */
+.contact-content {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+/* Contact Info Section */
+.contact-info-section {
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 2.5rem;
+}
+
+.contact-intro {
+  margin-bottom: 1rem;
 }
 
 .contact-intro h3 {
   font-size: 2.5rem;
   font-weight: 700;
   color: var(--dark-text);
-  margin-bottom: 1.5rem;
-  background: var(--gradient-purple);
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #00ff66, #00cc52);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .contact-intro p {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   line-height: 1.7;
   color: var(--light-text);
+}
+
+:root[data-theme="light"] .contact-intro p {
+  color: var(--muted-text);
 }
 
 .contact-details {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .contact-item {
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  padding: 2rem;
-  background: var(--light-gray);
+  padding: 1.8rem;
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 20px;
+  border: 1px solid rgba(0, 255, 102, 0.15);
+  backdrop-filter: blur(10px);
   transition: all 0.3s ease;
-  border: 2px solid transparent;
+  cursor: pointer;
 }
 
 .contact-item:hover {
-  border-color: var(--electric-purple);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-light);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(0, 255, 102, 0.3);
+  box-shadow: 0 10px 40px rgba(0, 255, 102, 0.1);
 }
 
 .contact-icon {
   width: 60px;
   height: 60px;
-  background: var(--gradient-purple);
+  background: rgba(0, 255, 102, 0.1);
   border-radius: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 1.5rem;
   flex-shrink: 0;
+  border: 2px solid rgba(0, 255, 102, 0.3);
+  color: #00ff66;
+  transition: all 0.3s ease;
 }
 
-.contact-icon i {
-  font-size: 1.5rem;
-  color: var(--white);
+.contact-item:hover .contact-icon {
+  background: rgba(0, 255, 102, 0.15);
+  border-color: #00ff66;
+  transform: scale(1.1) rotate(5deg);
+}
+
+.contact-text {
+  flex: 1;
 }
 
 .contact-text h4 {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 600;
+  color: var(--dark-text);
+  margin-bottom: 0.3rem;
+}
+
+:root[data-theme="light"] .contact-text h4 {
+  color: var(--dark-text);
+}
+
+.contact-text a {
+  font-size: 1rem;
+  color: #00ff66;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.contact-text a:hover {
+  color: #7aff9f;
+}
+
+.contact-text p {
+  font-size: 1rem;
+  color: #00ff66;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Availability Badge */
+.contact-cta-section {
+  margin-top: 1rem;
+}
+
+.availability-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem 1.5rem;
+  background: rgba(0, 255, 102, 0.1);
+  border: 1px solid rgba(0, 255, 102, 0.3);
+  border-radius: 50px;
+  color: #00ff66;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.pulsing-dot {
+  width: 10px;
+  height: 10px;
+  background: #00ff66;
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+  box-shadow: 0 0 10px rgba(0, 255, 102, 0.8);
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
+  50% { 
+    opacity: 0.5; 
+    transform: scale(1.2); 
+  }
+}
+
+/* Calendly Section */
+.calendly-section {
+  display: flex;
+  align-items: stretch;
+}
+
+.calendly-card {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 25px;
+  padding: 2.5rem;
+  border: 1px solid rgba(0, 255, 102, 0.15);
+  backdrop-filter: blur(10px);
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.calendly-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.calendly-header i {
+  font-size: 3rem;
+  color: #00ff66;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.calendly-header h3 {
+  font-size: 2rem;
+  font-weight: 700;
   color: var(--dark-text);
   margin-bottom: 0.5rem;
 }
 
-.contact-text a,
-.contact-text p {
-  font-size: 1rem;
-  color: var(--electric-purple);
-  margin: 0;
-  text-decoration: none;
-  transition: color 0.3s ease;
-  font-weight: 500;
-}
-
-.contact-text a:hover {
-  color: var(--midnight-blue);
-}
-
-.contact-cta {
-  margin-top: 1rem;
-}
-
-.contact-cta .cta-button {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  justify-content: center;
-}
-
-.contact-form-section {
-  display: flex;
-  align-items: center;
-}
-
-.contact-form {
-  background: var(--light-gray);
-  padding: 3rem;
-  border-radius: 25px;
-  width: 100%;
-  box-shadow: var(--shadow-light);
-}
-
-.contact-form h3 {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--dark-text);
-  margin-bottom: 2rem;
-  text-align: center;
-}
-
-.form-group {
-  margin-bottom: 2rem;
-  position: relative;
-}
-
-.form-group label {
-  display: block;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--dark-text);
-  margin-bottom: 0.8rem;
-}
-
-.required {
-  color: #EF4444;
-  font-weight: 700;
-}
-
-.form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: 1rem 1.5rem;
-  border: 2px solid transparent;
-  border-radius: 12px;
-  font-size: 1rem;
-  font-family: inherit;
-  transition: all 0.3s ease;
-  background: var(--white);
+:root[data-theme="light"] .calendly-header h3 {
   color: var(--dark-text);
 }
 
-.form-group input:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: var(--electric-purple);
-  box-shadow: 0 0 0 3px rgba(162, 89, 255, 0.1);
-}
-
-.form-group input::placeholder,
-.form-group textarea::placeholder {
-  color: #999;
-}
-
-.form-group input.error,
-.form-group textarea.error {
-  border-color: #EF4444;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-}
-
-.form-group textarea {
-  resize: vertical;
-  min-height: 120px;
-}
-
-.char-count {
-  position: absolute;
-  top: 0;
-  right: 0;
-  font-size: 0.8rem;
+.calendly-header p {
+  font-size: 1.1rem;
   color: var(--light-text);
-  margin-top: 0.5rem;
-}
-
-.error-message {
-  color: #EF4444;
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.error-message i {
-  font-size: 0.8rem;
-}
-
-.contact-form .cta-button {
-  width: 100%;
-  justify-content: center;
-  margin-top: 1rem;
-}
-
-.success-message {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  background: #10B981;
-  color: white;
-  padding: 1rem 1.5rem;
-  border-radius: 12px;
-  margin-top: 1rem;
-  animation: slideIn 0.3s ease;
-}
-
-.success-message i {
-  font-size: 1.2rem;
-  margin-top: 0.2rem;
-}
-
-.success-message div p {
-  margin: 0 0 0.5rem 0;
-  line-height: 1.5;
-}
-
-.success-message div p:last-child {
-  margin-bottom: 0;
-  font-size: 0.9rem;
-  opacity: 0.9;
-}
-
-.error-message {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  background: #EF4444;
-  color: white;
-  padding: 1rem 1.5rem;
-  border-radius: 12px;
-  margin-top: 1rem;
-  animation: slideIn 0.3s ease;
-}
-
-.error-message i {
-  font-size: 1.2rem;
-  margin-top: 0.2rem;
-}
-
-.error-message p {
   margin: 0;
-  line-height: 1.5;
-  font-size: 0.9rem;
 }
 
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+:root[data-theme="light"] .calendly-header p {
+  color: var(--muted-text);
+}
+
+.calendly-inline-widget {
+  min-width: 100%;
+  height: 700px;
+  border-radius: 15px;
+  overflow: hidden;
 }
 
 /* Responsive Design */
-@media (max-width: 1024px) {
-  .contact-content {
-    grid-template-columns: 1fr;
-    gap: 4rem;
+@media (max-width: 1200px) {
+  .section-title {
+    font-size: 3.5rem;
   }
 
   .contact-intro h3 {
     font-size: 2.2rem;
   }
+}
 
-  .contact-form {
-    padding: 2.5rem;
+@media (max-width: 1024px) {
+  .contact-content {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .calendly-inline-widget {
+    height: 650px;
   }
 }
 
 @media (max-width: 768px) {
-  .contact-item {
-    flex-direction: column;
-    text-align: center;
-    gap: 1rem;
-    padding: 1.5rem;
+  .contact {
+    padding: 4rem 0;
   }
 
-  .contact-icon {
-    width: 50px;
-    height: 50px;
+  .section-title {
+    font-size: 2.5rem;
   }
 
-  .contact-icon i {
-    font-size: 1.2rem;
-  }
-
-  .contact-text h4 {
+  .section-subtitle {
     font-size: 1.1rem;
-  }
-
-  .contact-form {
-    padding: 2rem;
-  }
-
-  .contact-form h3 {
-    font-size: 1.8rem;
+    margin-bottom: 3rem;
   }
 
   .contact-intro h3 {
@@ -346,26 +485,17 @@
   }
 
   .contact-intro p {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 
-  .char-count {
-    font-size: 0.75rem;
-  }
-}
-
-@media (max-width: 480px) {
   .contact-item {
-    padding: 1.2rem;
+    padding: 1.5rem;
   }
 
   .contact-icon {
-    width: 45px;
-    height: 45px;
-  }
-
-  .contact-icon i {
-    font-size: 1.1rem;
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
   }
 
   .contact-text h4 {
@@ -374,34 +504,84 @@
 
   .contact-text a,
   .contact-text p {
-    font-size: 0.9rem;
-  }
-
-  .contact-form {
-    padding: 1.5rem;
-  }
-
-  .contact-form h3 {
-    font-size: 1.6rem;
-  }
-
-  .form-group input,
-  .form-group textarea {
-    padding: 0.8rem 1.2rem;
     font-size: 0.95rem;
+  }
+
+  .calendly-card {
+    padding: 2rem;
+  }
+
+  .calendly-header h3 {
+    font-size: 1.8rem;
+  }
+
+  .calendly-header p {
+    font-size: 1rem;
+  }
+
+  .calendly-inline-widget {
+    height: 600px;
+  }
+
+  .orb-1,
+  .orb-2,
+  .orb-3 {
+    width: 250px;
+    height: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact {
+    padding: 3rem 0;
+  }
+
+  .container {
+    padding: 0 1.5rem;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .section-subtitle {
+    font-size: 1rem;
   }
 
   .contact-intro h3 {
     font-size: 1.6rem;
   }
 
-  .contact-intro p {
-    font-size: 1rem;
+  .contact-item {
+    padding: 1.2rem;
+    flex-direction: column;
+    text-align: center;
   }
 
-  .success-message,
-  .error-message {
-    padding: 1rem;
-    font-size: 0.85rem;
+  .contact-icon {
+    width: 45px;
+    height: 45px;
+    font-size: 1.1rem;
   }
-} 
+
+  .calendly-card {
+    padding: 1.5rem;
+  }
+
+  .calendly-header i {
+    font-size: 2.5rem;
+  }
+
+  .calendly-header h3 {
+    font-size: 1.5rem;
+  }
+
+  .calendly-inline-widget {
+    height: 550px;
+  }
+
+  .availability-badge {
+    font-size: 0.85rem;
+    padding: 0.8rem 1.2rem;
+  }
+}
