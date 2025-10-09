@@ -21,7 +21,7 @@ const Projects = () => {
       fullDescription: 'A healthcare-focused AI platform designed to provide clinicians with accurate, evidence-backed medical insights in real-time.',
       challenge: 'Healthcare professionals needed instant access to verified medical information with proper citations and compliance with data security standards.',
       solution: 'Built a comprehensive LLM-powered platform that retrieves evidence-based medical data, ensuring HIPAA-like compliance while delivering real-time contextual answers.',
-      technologies: ['React', 'FastAPI', 'PostgreSQL', 'LangChain', 'OpenAI API', 'AWS', 'Redis', 'Docker'],
+      technologies: ['React', 'FastAPI', 'PostgreSQL', 'LangChain', 'AWS', 'Redis', 'Docker', 'Python', 'TensorFlow'],
       highlights: [
         'Architected the complete LLM integration pipeline for evidence retrieval with citation tracking',
         'Designed secure backend APIs with role-based access control and user management',
