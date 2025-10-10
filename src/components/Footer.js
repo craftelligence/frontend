@@ -95,9 +95,6 @@ const Footer = () => {
           <span className="particle particle-7"></span>
           <span className="particle particle-8"></span>
           <span className="particle particle-9"></span>
-          <span className="particle particle-10"></span>
-          <span className="particle particle-11"></span>
-          <span className="particle particle-12"></span>
         </div>
         <div className="border-glow-animation"></div>
       </div>

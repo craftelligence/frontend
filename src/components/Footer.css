@@ -88,89 +88,61 @@
   animation-duration: 22s;
 }
 
-/* Purple particles */
+/* Additional green particles */
 .particle-4 {
-  top: 25%;
-  left: 40%;
-  background: #8a2be2;
-  box-shadow: 0 0 20px rgba(138, 43, 226, 0.8);
+  top: 30%;
+  left: 60%;
+  background: #00ff66;
+  box-shadow: 0 0 20px rgba(0, 255, 102, 0.8);
   animation-delay: 3s;
   animation-duration: 19s;
 }
 
 .particle-5 {
-  top: 65%;
-  left: 50%;
-  background: #8a2be2;
-  box-shadow: 0 0 20px rgba(138, 43, 226, 0.8);
+  top: 75%;
+  left: 70%;
+  background: #00ff66;
+  box-shadow: 0 0 20px rgba(0, 255, 102, 0.8);
   animation-delay: 9s;
   animation-duration: 21s;
 }
 
 .particle-6 {
-  top: 35%;
-  left: 55%;
-  background: #8a2be2;
-  box-shadow: 0 0 20px rgba(138, 43, 226, 0.8);
-  animation-delay: 15s;
-  animation-duration: 23s;
-}
-
-/* Red particles */
-.particle-7 {
   top: 20%;
-  right: 25%;
-  background: #ff6347;
-  box-shadow: 0 0 20px rgba(255, 99, 71, 0.8);
+  right: 20%;
+  background: #00ff66;
+  box-shadow: 0 0 20px rgba(0, 255, 102, 0.8);
   animation-delay: 2s;
   animation-duration: 20s;
 }
 
-.particle-8 {
-  top: 55%;
-  right: 15%;
-  background: #ff6347;
-  box-shadow: 0 0 20px rgba(255, 99, 71, 0.8);
+.particle-7 {
+  top: 60%;
+  right: 30%;
+  background: #00ff66;
+  box-shadow: 0 0 20px rgba(0, 255, 102, 0.8);
   animation-delay: 8s;
   animation-duration: 18s;
 }
 
-.particle-9 {
-  bottom: 25%;
-  right: 35%;
-  background: #ff6347;
-  box-shadow: 0 0 20px rgba(255, 99, 71, 0.8);
+.particle-8 {
+  bottom: 30%;
+  left: 80%;
+  background: #00ff66;
+  box-shadow: 0 0 20px rgba(0, 255, 102, 0.8);
   animation-delay: 14s;
   animation-duration: 24s;
 }
 
-/* Orange particles */
-.particle-10 {
-  top: 40%;
-  right: 10%;
-  background: #ffa500;
-  box-shadow: 0 0 20px rgba(255, 165, 0, 0.8);
-  animation-delay: 4s;
-  animation-duration: 22s;
-}
-
-.particle-11 {
-  bottom: 40%;
-  left: 45%;
-  background: #ffa500;
-  box-shadow: 0 0 20px rgba(255, 165, 0, 0.8);
-  animation-delay: 10s;
-  animation-duration: 19s;
-}
-
-.particle-12 {
-  top: 80%;
-  right: 45%;
-  background: #ffa500;
-  box-shadow: 0 0 20px rgba(255, 165, 0, 0.8);
+.particle-9 {
+  top: 85%;
+  left: 50%;
+  background: #00ff66;
+  box-shadow: 0 0 20px rgba(0, 255, 102, 0.8);
   animation-delay: 16s;
   animation-duration: 21s;
 }
+
 
 @keyframes particleFloat {
   0%, 100% {
@@ -189,24 +161,26 @@
   }
 }
 
-/* Border Glow Animation - Replaces Wave */
+/* Border Glow Animation - New Style */
 .border-glow-animation {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 4px;
+  height: 6px;
   background: linear-gradient(90deg, 
     transparent 0%, 
-    #00ff66 25%, 
-    #8a2be2 50%, 
-    #ff6347 75%, 
-    #ffa500 100%
+    #00ff66 20%, 
+    #00cc52 40%, 
+    #00ff66 60%, 
+    #00cc52 80%, 
+    transparent 100%
   );
-  background-size: 200% 100%;
-  animation: glowSweep 5s linear infinite;
-  filter: blur(2px);
-  opacity: 0.6;
+  background-size: 300% 100%;
+  animation: glowSweep 8s ease-in-out infinite;
+  filter: blur(3px);
+  opacity: 0.8;
+  border-radius: 0 0 8px 8px;
 }
 
 .border-glow-animation::before {
@@ -215,17 +189,37 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
+  height: 6px;
   background: linear-gradient(90deg, 
-    #ffa500 0%, 
-    #ff6347 25%, 
-    #8a2be2 50%, 
-    #00ff66 75%, 
+    transparent 0%, 
+    #00ff66 15%, 
+    #00cc52 35%, 
+    #00ff66 55%, 
+    #00cc52 75%, 
+    transparent 100%
+  );
+  background-size: 300% 100%;
+  animation: glowSweep 8s ease-in-out infinite reverse;
+  filter: blur(3px);
+  border-radius: 0 0 8px 8px;
+}
+
+.border-glow-animation::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    #00ff66 50%, 
     transparent 100%
   );
   background-size: 200% 100%;
-  animation: glowSweep 5s linear infinite reverse;
-  filter: blur(2px);
+  animation: glowSweep 4s linear infinite;
+  opacity: 1;
+  border-radius: 0 0 4px 4px;
 }
 
 @keyframes glowSweep {
