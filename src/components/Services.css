@@ -467,6 +467,18 @@
   background: rgba(255, 255, 255, 0.8);
 }
 
+.autoplay-toggle.playing {
+  background: #00ff66;
+  color: #000;
+  border-color: #00ff66;
+}
+
+.autoplay-toggle.paused {
+  background: var(--current-service-color, #ff6347);
+  color: #fff;
+  border-color: var(--current-service-color, #ff6347);
+}
+
 .autoplay-pulse {
   width: 8px;
   height: 8px;

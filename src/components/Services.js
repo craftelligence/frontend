@@ -217,16 +217,16 @@ const Services = () => {
         <div className="carousel-wrapper">
           <div className="carousel-main">
             <button 
-              className="autoplay-toggle" 
+              className={`autoplay-toggle ${isAutoPlaying ? 'playing' : 'paused'}`}
               onClick={() => setIsAutoPlaying(!isAutoPlaying)}
-              style={{ borderColor: currentService.themeColor }}
+              style={!isAutoPlaying ? { '--current-service-color': currentService.themeColor } : {}}
             >
               {isAutoPlaying ? (
-                <div className="autoplay-pulse" style={{ background: currentService.themeColor }}></div>
+                <div className="autoplay-pulse"></div>
               ) : (
                 <div className="autoplay-paused"></div>
               )}
-              <span style={{ color: currentService.themeColor }}>{isAutoPlaying ? 'Auto-playing' : 'Paused'}</span>
+              <span>{isAutoPlaying ? 'Auto-playing' : 'Paused'}</span>
             </button>
 
             <button 
