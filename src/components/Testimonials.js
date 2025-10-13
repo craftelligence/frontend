@@ -218,8 +218,6 @@ const Testimonials = () => {
             <motion.button
               className="nav-button prev"
               onClick={prevTestimonial}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
               style={{ 
                 borderColor: testimonials[currentIndex]?.accentColor, 
                 color: testimonials[currentIndex]?.accentColor 
@@ -233,8 +231,6 @@ const Testimonials = () => {
             <motion.button
               className="nav-button next"
               onClick={nextTestimonial}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
               style={{ 
                 borderColor: testimonials[currentIndex]?.accentColor, 
                 color: testimonials[currentIndex]?.accentColor 

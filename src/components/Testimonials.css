@@ -259,14 +259,17 @@
   }
 
   .show-more-btn:hover, .show-less-btn:hover {
-    background: currentColor;
-    color: #000;
     transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    border-color: currentColor;
+    scale: 1.01;
   }
 
   :root[data-theme="light"] .show-more-btn:hover, 
   :root[data-theme="light"] .show-less-btn:hover {
-    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    border-color: currentColor;
   }
   
   /* ========== Card Footer ========== */
@@ -373,7 +376,6 @@
   .nav-button:hover {
     background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.4);
-    transform: scale(1.05);
   }
 
   :root[data-theme="light"] .nav-button:hover {
