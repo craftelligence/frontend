@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { auth } from '../firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import UserProfile from './UserProfile';
 import './Navbar.css';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -12,6 +16,13 @@ const Navbar = () => {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+    return () => unsubscribe();
   }, []);
 
   const scrollToSection = (sectionId) => {
@@ -72,6 +83,20 @@ const Navbar = () => {
           <motion.li whileHover={{ scale: 1.05 }}>
             <button onClick={() => scrollToSection('contact')} className="nav-link">Contact</button>
           </motion.li>
+          {user ? (
+            <motion.li whileHover={{ scale: 1.05 }}>
+              <UserProfile user={user} />
+            </motion.li>
+          ) : (
+            <motion.li whileHover={{ scale: 1.05 }}>
+              <button 
+                onClick={() => window.open('/developer-registration', '_blank')} 
+                className="nav-link developer-btn"
+              >
+                Are You Developer?
+              </button>
+            </motion.li>
+          )}
         </ul>
       </div>
     </motion.nav>
