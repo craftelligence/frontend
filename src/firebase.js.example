@@ -4,14 +4,15 @@ import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { getStorage } from 'firebase/storage';
 
 // Your Firebase configuration
+// Replace these values with your actual Firebase project configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyB_o7o45cQiDOwT7DfOy43p38KgOIoq0Qo",
-  authDomain: "craftelligence-developer-67621.firebaseapp.com",
-  projectId: "craftelligence-developer-67621",
-  storageBucket: "craftelligence-developer-67621.firebasestorage.app",
-  messagingSenderId: "506873714887",
-  appId: "1:506873714887:web:76e48a07dfb99f1210c6e2",
-  measurementId: "G-BPC4HQ3DJ3"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "your-project.firebaseapp.com",
+  projectId: "your-project-id",
+  storageBucket: "your-project.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID",
+  measurementId: "YOUR_MEASUREMENT_ID"
 };
 
 // Initialize Firebase with performance optimizations
