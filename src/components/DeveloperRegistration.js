@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { auth, db, storage, googleProvider } from '../firebase';
-import { signInWithPopup } from 'firebase/auth';
+import { signInWithPopup, onAuthStateChanged } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import './DeveloperRegistration.css';
@@ -21,6 +21,24 @@ const DeveloperRegistration = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+
+  // Listen for authentication state changes
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+        setFormData(prev => ({
+          ...prev,
+          name: user.displayName || '',
+          email: user.email || ''
+        }));
+        setError('');
+      } else {
+        setUser(null);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   const handleGoogleSignIn = async () => {
     try {
@@ -496,6 +514,9 @@ const DeveloperRegistration = () => {
                 <div className="step-info">
                   <h3>Sign in with Google</h3>
                   <p>Authenticate to continue with your application</p>
+                  <p className="verification-note">
+                    💡 If you clicked an email verification link, please wait a moment for authentication to complete.
+                  </p>
                 </div>
               </div>
               <motion.button 

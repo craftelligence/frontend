@@ -712,6 +712,16 @@
   font-size: 0.9rem;
 }
 
+.verification-note {
+  color: #00ff66 !important;
+  font-size: 0.85rem !important;
+  margin: 0.8rem 0 0 0 !important;
+  padding: 0.5rem;
+  background: rgba(0, 255, 102, 0.1);
+  border-radius: 8px;
+  border-left: 3px solid #00ff66;
+}
+
 /* Google Sign-in */
 .google-signin {
   text-align: center;
