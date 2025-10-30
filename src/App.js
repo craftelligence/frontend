@@ -12,6 +12,7 @@ const Testimonials = lazy(() => import('./components/Testimonials'));
 const Contact = lazy(() => import('./components/Contact'));
 const Footer = lazy(() => import('./components/Footer'));
 const DeveloperRegistration = lazy(() => import('./components/DeveloperRegistration'));
+const ProfilePage = lazy(() => import('./components/ProfilePage'));
 
 // Loading component
 const LoadingSpinner = () => (
@@ -59,6 +60,11 @@ function App() {
           <Route path="/developer-registration" element={
             <Suspense fallback={<LoadingSpinner />}>
               <DeveloperRegistration />
+            </Suspense>
+          } />
+          <Route path="/profile" element={
+            <Suspense fallback={<LoadingSpinner />}>
+              <ProfilePage />
             </Suspense>
           } />
         </Routes>

@@ -5,7 +5,7 @@ import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
 import './UserProfile.css';
 
-const UserProfile = ({ user, onProfileUpdate }) => {
+const UserProfile = ({ user, onProfileUpdate, onNavigateProfile }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [profile, setProfile] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -109,7 +109,13 @@ const UserProfile = ({ user, onProfileUpdate }) => {
     <div className="user-profile-container">
       <motion.button
         className="profile-trigger"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          if (onNavigateProfile) {
+            onNavigateProfile();
+          } else {
+            setIsOpen(!isOpen);
+          }
+        }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
@@ -123,14 +129,15 @@ const UserProfile = ({ user, onProfileUpdate }) => {
         <span className="profile-name">{user.displayName}</span>
         <motion.span
           className="dropdown-arrow"
-          animate={{ rotate: isOpen ? 180 : 0 }}
+          animate={{ rotate: onNavigateProfile ? 0 : (isOpen ? 180 : 0) }}
           transition={{ duration: 0.2 }}
         >
           ▼
         </motion.span>
       </motion.button>
 
-      <AnimatePresence>
+      {!onNavigateProfile && (
+        <AnimatePresence>
         {isOpen && (
           <motion.div
             className="profile-dropdown"
@@ -284,6 +291,7 @@ const UserProfile = ({ user, onProfileUpdate }) => {
           </motion.div>
         )}
       </AnimatePresence>
+      )}
     </div>
   );
 };

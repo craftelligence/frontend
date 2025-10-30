@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import UserProfile from './UserProfile';
@@ -9,6 +10,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,6 +32,11 @@ const Navbar = () => {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
+    setIsOpen(false);
+  };
+
+  const goTo = (path) => {
+    navigate(path);
     setIsOpen(false);
   };
 
@@ -85,12 +92,12 @@ const Navbar = () => {
           </motion.li>
           {user ? (
             <motion.li whileHover={{ scale: 1.05 }}>
-              <UserProfile user={user} />
+              <UserProfile user={user} onNavigateProfile={() => goTo('/profile')} />
             </motion.li>
           ) : (
             <motion.li whileHover={{ scale: 1.05 }}>
-              <button 
-                onClick={() => window.open('/developer-registration', '_blank')} 
+              <button
+                onClick={() => goTo('/developer-registration')}
                 className="nav-link developer-btn"
               >
                 Are You Developer?

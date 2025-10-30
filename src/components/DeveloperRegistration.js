@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { auth, db, storage, googleProvider } from '../firebase';
+import { auth, db, googleProvider } from '../firebase';
 import { signInWithPopup } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import './DeveloperRegistration.css';
+
+const API_BASE = (process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000').replace(/\/$/, '');
+const apiUrl = (path) => `${API_BASE}${path.startsWith('/') ? path : `/${path}`}`;
 
 const DeveloperRegistration = () => {
   const navigate = useNavigate();
@@ -15,7 +17,12 @@ const DeveloperRegistration = () => {
     phone: '',
     resume: null,
     availability: '',
-    location: ''
+    location: '',
+    start_date: '',
+    current_job_location: '',
+    job_status: '',
+    experience_years: '',
+    current_position: ''
   });
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -25,16 +32,36 @@ const DeveloperRegistration = () => {
   const handleGoogleSignIn = async () => {
     try {
       setLoading(true);
-      const result = await signInWithPopup(auth, googleProvider);
-      setUser(result.user);
-      setFormData(prev => ({
-        ...prev,
-        name: result.user.displayName || '',
-        email: result.user.email || ''
-      }));
       setError('');
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      console.log('Signed in user:', user?.uid, user?.email);
+      
+      // Get ID token immediately and log it
+      const idToken = await user.getIdToken();
+
+      // Check if profile exists
+      const res = await fetch(apiUrl(`/profiles/user/${encodeURIComponent(user.uid)}`), {
+        headers: { Authorization: `Bearer ${idToken}` }
+      });
+
+      if (res.status === 200) {
+        // Profile exists, redirect to profile page
+        navigate('/profile');
+        return;
+      } else if (res.status === 404) {
+        // No profile yet, proceed with registration
+        setUser(user);
+        setFormData(prev => ({
+          ...prev,
+          name: user.displayName || '',
+          email: user.email || '',
+        }));
+      } else {
+        throw new Error('Failed to check profile status');
+      }
     } catch (error) {
-      setError('Google sign-in failed: ' + error.message);
+      setError(error.message || 'Failed to sign in with Google');
     } finally {
       setLoading(false);
     }
@@ -78,20 +105,39 @@ const DeveloperRegistration = () => {
       setLoading(true);
       setError('');
 
-      let resumeUrl = '';
-      if (formData.resume) {
-        // Upload resume to Firebase Storage
-        const resumeRef = ref(storage, `resumes/${user.uid}_${Date.now()}.pdf`);
-        await uploadBytes(resumeRef, formData.resume);
-        resumeUrl = await getDownloadURL(resumeRef);
+      // Build multipart/form-data for backend
+      const fd = new FormData();
+      fd.append('name', formData.name);
+      fd.append('email', formData.email);
+      fd.append('phone_no', formData.phone);
+      fd.append('availability', formData.availability);
+      fd.append('interested_location', formData.location);
+      // Use form inputs that align with backend enums
+      fd.append('start_date', formData.start_date);
+      fd.append('current_job_location', formData.current_job_location);
+      fd.append('job_status', formData.job_status);
+      fd.append('experience_years', String(formData.experience_years || '0'));
+      fd.append('current_position', formData.current_position);
+      if (formData.resume) fd.append('resume', formData.resume);
+
+      const idToken = await user.getIdToken?.();
+      const authHeaders = idToken ? { Authorization: `Bearer ${idToken}` } : {};
+
+      const res = await fetch(apiUrl('/profiles/'), {
+        method: 'POST',
+        headers: authHeaders,
+        body: fd,
+      });
+      if (!res.ok) {
+        const txt = await res.text();
+        throw new Error(txt || 'Failed to submit application');
       }
 
-      // Save developer data to Firestore using user ID as document ID
+      // Save minimal record to Firestore for internal tracking (optional)
       await setDoc(doc(db, 'developers', user.uid), {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
-        resumeUrl: resumeUrl,
         availability: formData.availability,
         location: formData.location,
         userId: user.uid,
@@ -696,6 +742,123 @@ const DeveloperRegistration = () => {
                   <option value="remote">Remote</option>
                   <option value="onsite">Onsite</option>
                   <option value="both">Both Remote & Onsite</option>
+                </select>
+              </motion.div>
+
+              {/* Start Date */}
+              <motion.div 
+                className="form-group"
+                whileHover={{ scale: 1.01 }}
+                transition={{ duration: 0.2 }}
+              >
+                <label htmlFor="start_date">
+                  <span className="label-icon">🗓️</span>
+                  Start Date *
+                </label>
+                <select
+                  id="start_date"
+                  name="start_date"
+                  value={formData.start_date}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="">Select start date</option>
+                  <option value="immediately">Immediately</option>
+                  <option value="15 days">15 days</option>
+                  <option value="1 month">1 month</option>
+                </select>
+              </motion.div>
+
+              {/* Current Job Location */}
+              <motion.div 
+                className="form-group"
+                whileHover={{ scale: 1.01 }}
+                transition={{ duration: 0.2 }}
+              >
+                <label htmlFor="current_job_location">
+                  <span className="label-icon">🏢</span>
+                  Current Job Location *
+                </label>
+                <input
+                  type="text"
+                  id="current_job_location"
+                  name="current_job_location"
+                  value={formData.current_job_location}
+                  onChange={handleInputChange}
+                  required
+                  placeholder="Enter your current job location"
+                />
+              </motion.div>
+
+              {/* Job Status */}
+              <motion.div 
+                className="form-group"
+                whileHover={{ scale: 1.01 }}
+                transition={{ duration: 0.2 }}
+              >
+                <label htmlFor="job_status">
+                  <span className="label-icon">💼</span>
+                  Job Status *
+                </label>
+                <select
+                  id="job_status"
+                  name="job_status"
+                  value={formData.job_status}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="">Select job status</option>
+                  <option value="employed">Employed</option>
+                  <option value="unemployed">Unemployed</option>
+                </select>
+              </motion.div>
+
+              {/* Experience Years */}
+              <motion.div 
+                className="form-group"
+                whileHover={{ scale: 1.01 }}
+                transition={{ duration: 0.2 }}
+              >
+                <label htmlFor="experience_years">
+                  <span className="label-icon">📈</span>
+                  Experience (years) *
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.1"
+                  id="experience_years"
+                  name="experience_years"
+                  value={formData.experience_years}
+                  onChange={handleInputChange}
+                  required
+                  placeholder="e.g., 3.5"
+                />
+              </motion.div>
+
+              {/* Current Position */}
+              <motion.div 
+                className="form-group"
+                whileHover={{ scale: 1.01 }}
+                transition={{ duration: 0.2 }}
+              >
+                <label htmlFor="current_position">
+                  <span className="label-icon">🧑‍💻</span>
+                  Current Position *
+                </label>
+                <select
+                  id="current_position"
+                  name="current_position"
+                  value={formData.current_position}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="">Select position</option>
+                  <option value="frontend">Frontend</option>
+                  <option value="backend">Backend</option>
+                  <option value="full stack">Full Stack</option>
+                  <option value="data scientist">Data Scientist</option>
+                  <option value="other">Other</option>
                 </select>
               </motion.div>
 
