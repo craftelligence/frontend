@@ -23,7 +23,10 @@ const DeveloperRegistration = ({ initialUser = null, variant }) => {
     current_job_location: '',
     job_status: '',
     experience_years: '',
-    current_position: ''
+    current_position: '',
+    user_role: '',
+    preferred_salary: '',
+    looking_for: ''
   });
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -670,8 +673,10 @@ const DeveloperRegistration = ({ initialUser = null, variant }) => {
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
+                  placeholder="+1 (555) 123-4567"
+                  pattern="[0-9+\-() ]+"
+                  title="Please enter a valid phone number"
                   required
-                  placeholder="Enter your phone number"
                 />
               </motion.div>
 
@@ -680,32 +685,131 @@ const DeveloperRegistration = ({ initialUser = null, variant }) => {
                 whileHover={{ scale: 1.01 }}
                 transition={{ duration: 0.2 }}
               >
-                <label htmlFor="resume">
-                  <span className="label-icon">📄</span>
-                  Resume (PDF, max 2MB) *
-                </label>
-                <div className="file-input-wrapper">
+                <label htmlFor="user_role">Employment Role *</label>
+                <select
+                  id="user_role"
+                  name="user_role"
+                  value={formData.user_role}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="">Select employment type</option>
+                  <option value="contractor">Contractor</option>
+                  <option value="full-time">Full-time</option>
+                  <option value="part-time">Part-time</option>
+                  <option value="any">Any</option>
+                </select>
+              </motion.div>
+              </div>
+
+              <div className="form-row">
+              <motion.div 
+                className="form-group"
+                whileHover={{ scale: 1.01 }}
+                transition={{ duration: 0.2 }}
+              >
+                <label htmlFor="preferred_salary">Preferred Salary (LPA) *</label>
+                <div className="salary-input">
+                  <span className="currency-symbol">$</span>
                   <input
-                    type="file"
-                    id="resume"
-                    accept=".pdf"
-                    onChange={handleFileChange}
+                    type="number"
+                    id="preferred_salary"
+                    name="preferred_salary"
+                    value={formData.preferred_salary}
+                    onChange={handleInputChange}
+                    placeholder="e.g., 80000"
+                    min="0"
+                    step="1000"
                     required
-                    className="file-input"
                   />
-                  <label htmlFor="resume" className="file-label">
-                    {formData.resume ? formData.resume.name : 'Choose File'}
-                  </label>
                 </div>
-                {formData.resume && (
-                  <motion.p 
-                    className="file-info"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                  >
-                    ✓ {formData.resume.name}
-                  </motion.p>
-                )}
+              </motion.div>
+
+              <motion.div 
+                className="form-group"
+                whileHover={{ scale: 1.01 }}
+                transition={{ duration: 0.2 }}
+              >
+                <label htmlFor="looking_for">Looking For (Job Role) *</label>
+                <select
+                  id="looking_for"
+                  name="looking_for"
+                  value={formData.looking_for}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="">Select job role</option>
+                  <option value="frontend">Frontend Developer</option>
+                  <option value="backend">Backend Developer</option>
+                  <option value="full-stack">Full Stack Developer</option>
+                  <option value="data-science">Data Scientist</option>
+                  <option value="ai-ml">AI/ML Engineer</option>
+                  <option value="qa">QA Engineer</option>
+                  <option value="other">Other</option>
+                </select>
+              </motion.div>
+              </div>
+
+              <div className="form-row">
+                <motion.div 
+                  className="form-group"
+                  whileHover={{ scale: 1.01 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <label htmlFor="resume">
+                    <span className="label-icon">📄</span>
+                    Resume (PDF, max 2MB) *
+                  </label>
+                  <div className="file-input-wrapper">
+                    <input
+                      type="file"
+                      id="resume"
+                      accept=".pdf"
+                      onChange={handleFileChange}
+                      required
+                      className="file-input"
+                    />
+                    <label htmlFor="resume" className="file-label">
+                      {formData.resume ? formData.resume.name : 'Choose File'}
+                    </label>
+                  </div>
+                  {formData.resume && (
+                    <motion.p 
+                      className="file-info"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                    >
+                      ✓ {formData.resume.name}
+                    </motion.p>
+                  )}
+                </motion.div>
+
+                {/* Current Position */}
+              <motion.div 
+                className="form-group"
+                whileHover={{ scale: 1.01 }}
+                transition={{ duration: 0.2 }}
+              >
+                <label htmlFor="current_position">
+                  <span className="label-icon">🧑‍💻</span>
+                  Current Position *
+                </label>
+                <select
+                  id="current_position"
+                  name="current_position"
+                  value={formData.current_position}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="">Select position</option>
+                  <option value="frontend">Frontend Developer</option>
+                  <option value="backend">Backend Developer</option>
+                  <option value="full-stack">Full Stack Developer</option>
+                  <option value="data-science">Data Scientist</option>
+                  <option value="ai-ml">AI/ML Engineer</option>
+                  <option value="qa">QA Engineer</option>
+                  <option value="other">Other</option>
+                </select>
               </motion.div>
               </div>
 
@@ -850,32 +954,6 @@ const DeveloperRegistration = ({ initialUser = null, variant }) => {
                 />
               </motion.div>
               </div>
-
-              {/* Current Position */}
-              <motion.div 
-                className="form-group"
-                whileHover={{ scale: 1.01 }}
-                transition={{ duration: 0.2 }}
-              >
-                <label htmlFor="current_position">
-                  <span className="label-icon">🧑‍💻</span>
-                  Current Position *
-                </label>
-                <select
-                  id="current_position"
-                  name="current_position"
-                  value={formData.current_position}
-                  onChange={handleInputChange}
-                  required
-                >
-                  <option value="">Select position</option>
-                  <option value="frontend">Frontend</option>
-                  <option value="backend">Backend</option>
-                  <option value="full stack">Full Stack</option>
-                  <option value="data scientist">Data Scientist</option>
-                  <option value="other">Other</option>
-                </select>
-              </motion.div>
 
               {error && (
                 <motion.div 
