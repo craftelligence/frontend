@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { auth, db, googleProvider } from '../firebase';
-import { signInWithPopup } from 'firebase/auth';
+import { signInWithPopup, onAuthStateChanged } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import './DeveloperRegistration.css';
 
 const API_BASE = (process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000').replace(/\/$/, '');
 const apiUrl = (path) => `${API_BASE}${path.startsWith('/') ? path : `/${path}`}`;
 
-const DeveloperRegistration = () => {
+const DeveloperRegistration = ({ initialUser = null, variant }) => {
   const navigate = useNavigate();
+  const isEmbedded = variant === 'embedded';
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -29,6 +30,33 @@ const DeveloperRegistration = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
+  // Keep auth state in sync and prefill when user becomes available
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => {
+      if (u) {
+        setUser(u);
+        setFormData(prev => ({
+          ...prev,
+          name: prev.name || u.displayName || '',
+          email: prev.email || u.email || '',
+        }));
+      }
+    });
+    return () => unsub();
+  }, []);
+
+  // If onboarding passed us a user, consume it immediately
+  useEffect(() => {
+    if (initialUser) {
+      setUser(initialUser);
+      setFormData(prev => ({
+        ...prev,
+        name: prev.name || initialUser.displayName || '',
+        email: prev.email || initialUser.email || '',
+      }));
+    }
+  }, [initialUser]);
+
   const handleGoogleSignIn = async () => {
     try {
       setLoading(true);
@@ -36,30 +64,8 @@ const DeveloperRegistration = () => {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
       console.log('Signed in user:', user?.uid, user?.email);
-      
-      // Get ID token immediately and log it
-      const idToken = await user.getIdToken();
-
-      // Check if profile exists
-      const res = await fetch(apiUrl(`/profiles/user/${encodeURIComponent(user.uid)}`), {
-        headers: { Authorization: `Bearer ${idToken}` }
-      });
-
-      if (res.status === 200) {
-        // Profile exists, redirect to profile page
-        navigate('/profile');
-        return;
-      } else if (res.status === 404) {
-        // No profile yet, proceed with registration
-        setUser(user);
-        setFormData(prev => ({
-          ...prev,
-          name: user.displayName || '',
-          email: user.email || '',
-        }));
-      } else {
-        throw new Error('Failed to check profile status');
-      }
+      // Always go to onboarding; it will choose form vs blank
+      navigate('/onboarding');
     } catch (error) {
       setError(error.message || 'Failed to sign in with Google');
     } finally {
@@ -160,9 +166,9 @@ const DeveloperRegistration = () => {
 
   if (success) {
     return (
-      <div className="developer-registration">
+      <div className={`developer-registration${isEmbedded ? ' embedded' : ''}`}>
         {/* Elegant Particle Background */}
-        <div className="particle-background">
+        <div className="particle-background" style={{ display: isEmbedded ? 'none' : undefined }}>
           {[...Array(50)].map((_, i) => (
             <motion.div
               key={`particle-${i}`}
@@ -188,7 +194,7 @@ const DeveloperRegistration = () => {
         </div>
 
         {/* Gradient Orbs */}
-        <div className="gradient-orbs">
+        <div className="gradient-orbs" style={{ display: isEmbedded ? 'none' : undefined }}>
           <motion.div 
             className="orb orb-1"
             animate={{
@@ -231,7 +237,7 @@ const DeveloperRegistration = () => {
         </div>
 
         {/* Mesh Grid */}
-        <div className="mesh-grid">
+        <div className="mesh-grid" style={{ display: isEmbedded ? 'none' : undefined }}>
           <svg width="100%" height="100%">
             <defs>
               <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
@@ -243,21 +249,21 @@ const DeveloperRegistration = () => {
         </div>
 
         {/* Zigzag Lines */}
-        <div className="zigzag-lines">
+        <div className="zigzag-lines" style={{ display: isEmbedded ? 'none' : undefined }}>
           {[...Array(5)].map((_, i) => (
             <div key={`zigzag-${i}`} className="zigzag-line" />
           ))}
         </div>
 
         {/* Diagonal Lines */}
-        <div className="diagonal-lines">
+        <div className="diagonal-lines" style={{ display: isEmbedded ? 'none' : undefined }}>
           {[...Array(4)].map((_, i) => (
             <div key={`diagonal-${i}`} className="diagonal-line" />
           ))}
         </div>
 
         {/* 3D Rotating Cubes */}
-        <div className="rotating-cubes">
+        <div className="rotating-cubes" style={{ display: isEmbedded ? 'none' : undefined }}>
           {[...Array(4)].map((_, i) => (
             <div key={`cube-${i}`} className="cube-3d">
               <div className="cube-face front"></div>
@@ -271,21 +277,21 @@ const DeveloperRegistration = () => {
         </div>
 
         {/* Wave Lines */}
-        <div className="wave-lines">
+        <div className="wave-lines" style={{ display: isEmbedded ? 'none' : undefined }}>
           {[...Array(4)].map((_, i) => (
             <div key={`wave-${i}`} className="wave-line" />
           ))}
         </div>
 
         {/* Lightning Bolts */}
-        <div className="lightning-container">
+        <div className="lightning-container" style={{ display: isEmbedded ? 'none' : undefined }}>
           {[...Array(3)].map((_, i) => (
             <div key={`lightning-${i}`} className="lightning-bolt" />
           ))}
         </div>
 
         {/* Circuit Board */}
-        <div className="circuit-board">
+        <div className="circuit-board" style={{ display: isEmbedded ? 'none' : undefined }}>
           <div className="circuit-line horizontal" style={{ top: '15%', left: '10%' }}></div>
           <div className="circuit-line vertical" style={{ top: '40%', right: '20%' }}></div>
           <div className="circuit-line horizontal" style={{ bottom: '30%', left: '30%' }}></div>
@@ -334,9 +340,9 @@ const DeveloperRegistration = () => {
   }
 
   return (
-    <div className="developer-registration">
+    <div className={`developer-registration${isEmbedded ? ' embedded' : ''}`}>
       {/* Elegant Particle Background */}
-      <div className="particle-background">
+      <div className="particle-background" style={{ display: isEmbedded ? 'none' : undefined }}>
         {[...Array(50)].map((_, i) => (
           <motion.div
             key={`particle-${i}`}
@@ -362,7 +368,7 @@ const DeveloperRegistration = () => {
       </div>
 
       {/* Gradient Orbs */}
-      <div className="gradient-orbs">
+      <div className="gradient-orbs" style={{ display: isEmbedded ? 'none' : undefined }}>
         <motion.div 
           className="orb orb-1"
           animate={{
@@ -405,7 +411,7 @@ const DeveloperRegistration = () => {
       </div>
 
       {/* Mesh Grid */}
-      <div className="mesh-grid">
+      <div className="mesh-grid" style={{ display: isEmbedded ? 'none' : undefined }}>
         <svg width="100%" height="100%">
           <defs>
             <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
@@ -417,21 +423,21 @@ const DeveloperRegistration = () => {
       </div>
 
       {/* Zigzag Lines */}
-      <div className="zigzag-lines">
+      <div className="zigzag-lines" style={{ display: isEmbedded ? 'none' : undefined }}>
         {[...Array(5)].map((_, i) => (
           <div key={`zigzag-${i}`} className="zigzag-line" />
         ))}
       </div>
 
       {/* Diagonal Lines */}
-      <div className="diagonal-lines">
+      <div className="diagonal-lines" style={{ display: isEmbedded ? 'none' : undefined }}>
         {[...Array(4)].map((_, i) => (
           <div key={`diagonal-${i}`} className="diagonal-line" />
         ))}
       </div>
 
       {/* 3D Rotating Cubes */}
-      <div className="rotating-cubes">
+      <div className="rotating-cubes" style={{ display: isEmbedded ? 'none' : undefined }}>
         {[...Array(4)].map((_, i) => (
           <div key={`cube-${i}`} className="cube-3d">
             <div className="cube-face front"></div>
@@ -445,21 +451,21 @@ const DeveloperRegistration = () => {
       </div>
 
       {/* Wave Lines */}
-      <div className="wave-lines">
+      <div className="wave-lines" style={{ display: isEmbedded ? 'none' : undefined }}>
         {[...Array(4)].map((_, i) => (
           <div key={`wave-${i}`} className="wave-line" />
         ))}
       </div>
 
       {/* Lightning Bolts */}
-      <div className="lightning-container">
+      <div className="lightning-container" style={{ display: isEmbedded ? 'none' : undefined }}>
         {[...Array(3)].map((_, i) => (
           <div key={`lightning-${i}`} className="lightning-bolt" />
         ))}
       </div>
 
       {/* Circuit Board */}
-      <div className="circuit-board">
+      <div className="circuit-board" style={{ display: isEmbedded ? 'none' : undefined }}>
         <div className="circuit-line horizontal" style={{ top: '15%', left: '10%' }}></div>
         <div className="circuit-line vertical" style={{ top: '40%', right: '20%' }}></div>
         <div className="circuit-line horizontal" style={{ bottom: '30%', left: '30%' }}></div>
@@ -606,7 +612,7 @@ const DeveloperRegistration = () => {
                   <p>Fill in your details to submit your application</p>
                 </div>
               </div>
-              
+              <div className="form-row">
               <motion.div 
                 className="form-group"
                 whileHover={{ scale: 1.01 }}
@@ -646,7 +652,9 @@ const DeveloperRegistration = () => {
                   placeholder="Enter your email"
                 />
               </motion.div>
+              </div>
 
+              <div className="form-row">
               <motion.div 
                 className="form-group"
                 whileHover={{ scale: 1.01 }}
@@ -699,7 +707,9 @@ const DeveloperRegistration = () => {
                   </motion.p>
                 )}
               </motion.div>
+              </div>
 
+              <div className="form-row">
               <motion.div 
                 className="form-group"
                 whileHover={{ scale: 1.01 }}
@@ -744,8 +754,10 @@ const DeveloperRegistration = () => {
                   <option value="both">Both Remote & Onsite</option>
                 </select>
               </motion.div>
+              </div>
 
               {/* Start Date */}
+              <div className="form-row">
               <motion.div 
                 className="form-group"
                 whileHover={{ scale: 1.01 }}
@@ -789,8 +801,10 @@ const DeveloperRegistration = () => {
                   placeholder="Enter your current job location"
                 />
               </motion.div>
+              </div>
 
               {/* Job Status */}
+              <div className="form-row">
               <motion.div 
                 className="form-group"
                 whileHover={{ scale: 1.01 }}
@@ -835,6 +849,7 @@ const DeveloperRegistration = () => {
                   placeholder="e.g., 3.5"
                 />
               </motion.div>
+              </div>
 
               {/* Current Position */}
               <motion.div 

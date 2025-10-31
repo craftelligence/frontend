@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { auth, db } from '../firebase';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import { signOut } from 'firebase/auth';
 import './UserProfile.css';
 
 const UserProfile = ({ user, onProfileUpdate, onNavigateProfile }) => {
@@ -93,13 +92,6 @@ const UserProfile = ({ user, onProfileUpdate, onNavigateProfile }) => {
     }
   };
 
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-    } catch (error) {
-      setError('Failed to sign out: ' + error.message);
-    }
-  };
 
   const getInitials = (name) => {
     return name ? name.split(' ').map(n => n[0]).join('').toUpperCase() : 'U';
@@ -191,13 +183,6 @@ const UserProfile = ({ user, onProfileUpdate, onNavigateProfile }) => {
                 disabled={loading}
               >
                 {isEditing ? 'Cancel' : 'Edit Profile'}
-              </button>
-              <button
-                className="signout-btn"
-                onClick={handleSignOut}
-                disabled={loading}
-              >
-                Sign Out
               </button>
             </div>
 

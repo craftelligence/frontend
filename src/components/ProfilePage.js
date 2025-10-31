@@ -309,7 +309,7 @@ export default function ProfilePage() {
     <div className="profile-page">
       <div className="profile-container">
         <div className="profile-topbar">
-          <button type="button" className="back-btn" onClick={() => navigate('/')}>← Back to Home</button>
+          <button type="button" className="back-btn" onClick={() => navigate('/onboarding')}>← Back to Home</button>
         </div>
         <motion.div
           className="profile-card"
@@ -373,9 +373,6 @@ export default function ProfilePage() {
             </div>
 
             <div className="btn-row">
-              <button type="button" onClick={handleLogout} disabled={loading} className="btn">
-                {loading ? 'Please wait...' : 'Log Out'}
-              </button>
               <button type="button" onClick={handleDelete} disabled={loading} className="btn btn-danger">
                 {loading ? 'Please wait...' : 'Delete Profile'}
               </button>
