@@ -9,7 +9,7 @@ import './DeveloperRegistration.css';
 const API_BASE = (process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000').replace(/\/$/, '');
 const apiUrl = (path) => `${API_BASE}${path.startsWith('/') ? path : `/${path}`}`;
 
-const DeveloperRegistration = ({ initialUser = null, variant }) => {
+const DeveloperRegistration = ({ initialUser = null, variant, onComplete }) => {
   const navigate = useNavigate();
   const isEmbedded = variant === 'embedded';
   const [formData, setFormData] = useState({
@@ -32,6 +32,7 @@ const DeveloperRegistration = ({ initialUser = null, variant }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [wasSubmitted, setWasSubmitted] = useState(false);
 
   // Keep auth state in sync and prefill when user becomes available
   useEffect(() => {
@@ -105,6 +106,14 @@ const DeveloperRegistration = ({ initialUser = null, variant }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setWasSubmitted(true);
+    // Use HTML5 constraint validation API manually
+    const formEl = e.currentTarget;
+    if (formEl && !formEl.checkValidity()) {
+      // Let the CSS show red borders due to was-submitted class; do not proceed
+      setError('Please fill in all required fields.');
+      return;
+    }
     if (!user) {
       setError('Please sign in with Google first');
       return;
@@ -127,6 +136,10 @@ const DeveloperRegistration = ({ initialUser = null, variant }) => {
       fd.append('job_status', formData.job_status);
       fd.append('experience_years', String(formData.experience_years || '0'));
       fd.append('current_position', formData.current_position);
+      // Additional required fields
+      fd.append('user_role', formData.user_role);
+      fd.append('preferred_salary', String(formData.preferred_salary || '0'));
+      fd.append('looking_for', formData.looking_for);
       if (formData.resume) fd.append('resume', formData.resume);
 
       const idToken = await user.getIdToken?.();
@@ -156,7 +169,15 @@ const DeveloperRegistration = ({ initialUser = null, variant }) => {
 
       setSuccess(true);
       
-      // Redirect to main page after successful registration
+      // If embedded in Onboarding, signal completion and do not navigate
+      if (isEmbedded) {
+        if (typeof onComplete === 'function') {
+          try { onComplete(); } catch {}
+        }
+        return;
+      }
+      
+      // Redirect to main page after successful registration (standalone)
       setTimeout(() => {
         navigate('/');
       }, 2000);
@@ -603,7 +624,8 @@ const DeveloperRegistration = ({ initialUser = null, variant }) => {
           {user && (
             <motion.form 
               onSubmit={handleSubmit} 
-              className="application-form"
+              className={`application-form ${wasSubmitted ? 'was-submitted' : ''}`}
+              noValidate
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
@@ -710,16 +732,15 @@ const DeveloperRegistration = ({ initialUser = null, variant }) => {
               >
                 <label htmlFor="preferred_salary">Preferred Salary (LPA) *</label>
                 <div className="salary-input">
-                  <span className="currency-symbol">$</span>
                   <input
                     type="number"
                     id="preferred_salary"
                     name="preferred_salary"
                     value={formData.preferred_salary}
                     onChange={handleInputChange}
-                    placeholder="e.g., 80000"
+                    placeholder="e.g., 8"
                     min="0"
-                    step="1000"
+                    step="1"
                     required
                   />
                 </div>
@@ -741,8 +762,8 @@ const DeveloperRegistration = ({ initialUser = null, variant }) => {
                   <option value="">Select job role</option>
                   <option value="frontend">Frontend Developer</option>
                   <option value="backend">Backend Developer</option>
-                  <option value="full-stack">Full Stack Developer</option>
-                  <option value="data-science">Data Scientist</option>
+                  <option value="full stack">Full Stack Developer</option>
+                  <option value="data scientist">Data Scientist</option>
                   <option value="ai-ml">AI/ML Engineer</option>
                   <option value="qa">QA Engineer</option>
                   <option value="other">Other</option>
@@ -804,8 +825,8 @@ const DeveloperRegistration = ({ initialUser = null, variant }) => {
                   <option value="">Select position</option>
                   <option value="frontend">Frontend Developer</option>
                   <option value="backend">Backend Developer</option>
-                  <option value="full-stack">Full Stack Developer</option>
-                  <option value="data-science">Data Scientist</option>
+                  <option value="full stack">Full Stack Developer</option>
+                  <option value="data scientist">Data Scientist</option>
                   <option value="ai-ml">AI/ML Engineer</option>
                   <option value="qa">QA Engineer</option>
                   <option value="other">Other</option>

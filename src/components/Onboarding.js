@@ -45,11 +45,13 @@ export default function Onboarding() {
         
         // First check if we have a profile in session storage
         const storedProfile = sessionStorage.getItem(`user_${fbUser.uid}_profile`);
-        
         if (storedProfile) {
           const profile = JSON.parse(storedProfile);
-          setHasProfile(profile.complete);
-          return;
+          // Only short-circuit if we know it's complete; if not complete, fall through to verify via Firestore
+          if (profile && profile.complete) {
+            setHasProfile(true);
+            return;
+          }
         }
         
         // If not in session storage, check Firestore

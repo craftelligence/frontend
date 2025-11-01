@@ -11,29 +11,35 @@ const apiUrl = (path) => `${API_BASE}${path.startsWith('/') ? path : `/${path}`}
 const initialState = {
   name: '',
   email: '',
-  phone_no: '',
+  phone: '',
+  resume: null,
   availability: '',
-  interested_location: '',
+  location: '',
   start_date: '',
   current_job_location: '',
   job_status: '',
   experience_years: '',
   current_position: '',
-  resume: null,
+  user_role: '',
+  preferred_salary: '',
+  looking_for: ''
 };
 
 const fieldLabels = {
   name: 'Full Name',
   email: 'Email',
-  phone_no: 'Phone Number',
+  phone: 'Phone Number',
   availability: 'Availability',
-  interested_location: 'Interested Location',
+  location: 'Interested Location',
   start_date: 'Start Date',
   current_job_location: 'Current Job Location',
   job_status: 'Job Status',
   experience_years: 'Experience (years)',
   current_position: 'Current Position',
   resume: 'Resume (PDF)',
+  user_role: 'User Role',
+  preferred_salary: 'Preferred Salary (LPA)',
+  looking_for: 'Looking For'
 };
 
 export default function ProfilePage() {
@@ -111,19 +117,22 @@ export default function ProfilePage() {
           return;
         }
         const data = await res.json();
-        // Map backend fields to form state
+        // Map backend fields to local form state names
         setForm((prev) => ({
           ...prev,
           name: data.name ?? prev.name ?? '',
           email: data.email ?? prev.email ?? '',
-          phone_no: data.phone_no ?? '',
-          availability: data.availability ?? '',
-          interested_location: data.interested_location ?? '',
-          start_date: data.start_date ?? '',
-          current_job_location: data.current_job_location ?? '',
-          job_status: data.job_status ?? '',
+          phone: data.phone_no ?? prev.phone ?? '',
+          availability: data.availability ?? prev.availability ?? '',
+          location: data.interested_location ?? prev.location ?? '',
+          start_date: data.start_date ?? prev.start_date ?? '',
+          current_job_location: data.current_job_location ?? prev.current_job_location ?? '',
+          job_status: data.job_status ?? prev.job_status ?? '',
           experience_years: data.experience_years !== undefined && data.experience_years !== null ? String(data.experience_years) : prev.experience_years,
-          current_position: data.current_position ?? '',
+          current_position: data.current_position ?? prev.current_position ?? '',
+          preferred_salary: data.preferred_salary !== undefined && data.preferred_salary !== null ? String(data.preferred_salary) : prev.preferred_salary,
+          looking_for: data.looking_for ?? prev.looking_for ?? '',
+          user_role: data.user_role ?? prev.user_role ?? '',
           resume: null, // file input not prefilled
         }));
       } catch (e) {
@@ -156,9 +165,9 @@ export default function ProfilePage() {
     const {
       name,
       email,
-      phone_no,
+      phone,
       availability,
-      interested_location,
+      location,
       start_date,
       current_job_location,
       job_status,
@@ -168,9 +177,9 @@ export default function ProfilePage() {
     return (
       !!name &&
       !!email &&
-      !!phone_no &&
+      !!phone &&
       !!availability &&
-      !!interested_location &&
+      !!location &&
       !!start_date && // one of allowed enum options
       !!current_job_location &&
       !!job_status &&
@@ -191,8 +200,25 @@ export default function ProfilePage() {
   };
 
   const toFormData = (data) => {
+    // Map local form keys to backend-expected keys
     const fd = new FormData();
-    Object.entries(data).forEach(([k, v]) => {
+    const map = {
+      name: data.name,
+      email: data.email,
+      phone_no: data.phone,
+      availability: data.availability,
+      interested_location: data.location,
+      start_date: data.start_date,
+      current_job_location: data.current_job_location,
+      job_status: data.job_status,
+      experience_years: data.experience_years,
+      current_position: data.current_position,
+      preferred_salary: data.preferred_salary,
+      looking_for: data.looking_for,
+      user_role: data.user_role,
+      resume: data.resume,
+    };
+    Object.entries(map).forEach(([k, v]) => {
       if (v !== undefined && v !== null && v !== '') {
         fd.append(k, v);
       }
@@ -224,6 +250,38 @@ export default function ProfilePage() {
       });
 
       if (putRes.ok) {
+        // Re-fetch to ensure we reflect server values (and any normalization)
+        try {
+          const idTokenAfter = await fbUser.getIdToken?.();
+          const authHeadersAfter = idTokenAfter ? { Authorization: `Bearer ${idTokenAfter}` } : {};
+          const refRes = await fetch(apiUrl(`/profiles/user/${encodeURIComponent(fbUser.uid)}`), {
+            method: 'GET',
+            headers: {
+              ...authHeadersAfter,
+              'Cache-Control': 'no-store',
+            },
+          });
+          if (refRes.ok) {
+            const data = await refRes.json();
+            setForm((prev) => ({
+              ...prev,
+              name: data.name ?? prev.name ?? '',
+              email: data.email ?? prev.email ?? '',
+              phone: data.phone_no ?? prev.phone ?? '',
+              availability: data.availability ?? prev.availability ?? '',
+              location: data.interested_location ?? prev.location ?? '',
+              start_date: data.start_date ?? prev.start_date ?? '',
+              current_job_location: data.current_job_location ?? prev.current_job_location ?? '',
+              job_status: data.job_status ?? prev.job_status ?? '',
+              experience_years: data.experience_years !== undefined && data.experience_years !== null ? String(data.experience_years) : prev.experience_years,
+              current_position: data.current_position ?? prev.current_position ?? '',
+              preferred_salary: data.preferred_salary !== undefined && data.preferred_salary !== null ? String(data.preferred_salary) : prev.preferred_salary,
+              looking_for: data.looking_for ?? prev.looking_for ?? '',
+              user_role: data.user_role ?? prev.user_role ?? '',
+              resume: null,
+            }));
+          }
+        } catch {}
         setMessage('Profile updated successfully.');
         return;
       }
@@ -243,6 +301,38 @@ export default function ProfilePage() {
           const txt = await postRes.text();
           throw new Error(txt || 'Failed to create profile');
         }
+        // After creating, re-fetch to populate the latest from server
+        try {
+          const idTokenAfter = await fbUser.getIdToken?.();
+          const authHeadersAfter = idTokenAfter ? { Authorization: `Bearer ${idTokenAfter}` } : {};
+          const refRes = await fetch(apiUrl(`/profiles/user/${encodeURIComponent(fbUser.uid)}`), {
+            method: 'GET',
+            headers: {
+              ...authHeadersAfter,
+              'Cache-Control': 'no-store',
+            },
+          });
+          if (refRes.ok) {
+            const data = await refRes.json();
+            setForm((prev) => ({
+              ...prev,
+              name: data.name ?? prev.name ?? '',
+              email: data.email ?? prev.email ?? '',
+              phone: data.phone_no ?? prev.phone ?? '',
+              availability: data.availability ?? prev.availability ?? '',
+              location: data.interested_location ?? prev.location ?? '',
+              start_date: data.start_date ?? prev.start_date ?? '',
+              current_job_location: data.current_job_location ?? prev.current_job_location ?? '',
+              job_status: data.job_status ?? prev.job_status ?? '',
+              experience_years: data.experience_years !== undefined && data.experience_years !== null ? String(data.experience_years) : prev.experience_years,
+              current_position: data.current_position ?? prev.current_position ?? '',
+              preferred_salary: data.preferred_salary !== undefined && data.preferred_salary !== null ? String(data.preferred_salary) : prev.preferred_salary,
+              looking_for: data.looking_for ?? prev.looking_for ?? '',
+              user_role: data.user_role ?? prev.user_role ?? '',
+              resume: null,
+            }));
+          }
+        } catch {}
         setMessage('Profile created successfully.');
         return;
       }
@@ -327,46 +417,182 @@ export default function ProfilePage() {
 
           <form onSubmit={handleSave}>
             <div className="form-grid">
-              <TextField label={fieldLabels.name} name="name" value={form.name} onChange={onChange} required />
-              <TextField type="email" label={fieldLabels.email} name="email" value={form.email} onChange={onChange} required />
-              <TextField label={fieldLabels.phone_no} name="phone_no" value={form.phone_no} onChange={onChange} required />
-              <SelectField label={fieldLabels.availability} name="availability" value={form.availability} onChange={onChange} options={[
-                { value: '', label: 'Select availability' },
-                { value: 'full-time', label: 'Full Time (40hrs/week)' },
-                { value: 'part-time', label: 'Part Time (20hrs/week)' },
-              ]} required />
-              <SelectField label={fieldLabels.interested_location} name="interested_location" value={form.interested_location} onChange={onChange} options={[
-                { value: '', label: 'Select location' },
-                { value: 'remote', label: 'Remote' },
-                { value: 'onsite', label: 'Onsite' },
-                { value: 'both', label: 'Both Remote & Onsite' },
-              ]} required />
-              <SelectField label={fieldLabels.start_date} name="start_date" value={form.start_date} onChange={onChange} options={[
-                { value: '', label: 'Select start date' },
-                { value: 'immediately', label: 'Immediately' },
-                { value: '15 days', label: '15 days' },
-                { value: '1 month', label: '1 month' },
-              ]} required />
-              <TextField label={fieldLabels.current_job_location} name="current_job_location" value={form.current_job_location} onChange={onChange} required />
-              <SelectField label={fieldLabels.job_status} name="job_status" value={form.job_status} onChange={onChange} options={[
-                { value: '', label: 'Select status' },
-                { value: 'employed', label: 'Employed' },
-                { value: 'unemployed', label: 'Unemployed' },
-              ]} required />
-              <TextField type="number" min="0" step="0.1" label={fieldLabels.experience_years} name="experience_years" value={form.experience_years} onChange={onChange} required />
-              <SelectField label={fieldLabels.current_position} name="current_position" value={form.current_position} onChange={onChange} options={[
-                { value: '', label: 'Select current position' },
-                { value: 'frontend', label: 'Frontend' },
-                { value: 'backend', label: 'Backend' },
-                { value: 'full stack', label: 'Full Stack' },
-                { value: 'data scientist', label: 'Data Scientist' },
-                { value: 'other', label: 'Other' },
-              ]} required />
+              <TextField 
+                label={fieldLabels.name} 
+                name="name" 
+                value={form.name} 
+                onChange={onChange} 
+                required 
+                placeholder="Enter your full name"
+              />
+              
+              <TextField 
+                type="email" 
+                label={fieldLabels.email} 
+                name="email" 
+                value={form.email} 
+                onChange={onChange} 
+                required 
+                placeholder="Enter your email"
+              />
+              
+              <TextField 
+                label={fieldLabels.phone} 
+                name="phone" 
+                value={form.phone} 
+                onChange={onChange} 
+                required 
+                placeholder="Enter your phone number"
+              />
+              
+              <SelectField 
+                label={fieldLabels.availability} 
+                name="availability" 
+                value={form.availability} 
+                onChange={onChange} 
+                options={[
+                  { value: '', label: 'Select availability' },
+                  { value: 'full-time', label: 'Full Time (40hrs/week)' },
+                  { value: 'part-time', label: 'Part Time (20hrs/week)' },
+                ]} 
+                required 
+              />
+              
+              <SelectField 
+                label={fieldLabels.location} 
+                name="location" 
+                value={form.location} 
+                onChange={onChange} 
+                options={[
+                  { value: '', label: 'Select location preference' },
+                  { value: 'remote', label: 'Remote' },
+                  { value: 'onsite', label: 'Onsite' },
+                  { value: 'both', label: 'Both Remote & Onsite' },
+                ]} 
+                required 
+              />
+              
+              <SelectField 
+                label={fieldLabels.start_date} 
+                name="start_date" 
+                value={form.start_date} 
+                onChange={onChange} 
+                options={[
+                  { value: '', label: 'Select start date' },
+                  { value: 'immediately', label: 'Immediately' },
+                  { value: '15 days', label: '15 days' },
+                  { value: '1 month', label: '1 month' },
+                ]} 
+                required 
+              />
+              
+              <TextField 
+                label={fieldLabels.current_job_location} 
+                name="current_job_location" 
+                value={form.current_job_location} 
+                onChange={onChange} 
+                required 
+                placeholder="Enter your current job location"
+              />
+              
+              <SelectField 
+                label={fieldLabels.job_status} 
+                name="job_status" 
+                value={form.job_status} 
+                onChange={onChange} 
+                options={[
+                  { value: '', label: 'Select job status' },
+                  { value: 'employed', label: 'Employed' },
+                  { value: 'unemployed', label: 'Unemployed' },
+                  { value: 'open-to-offers', label: 'Open to Offers' },
+                ]} 
+                required 
+              />
+              
+              <TextField 
+                type="number" 
+                min="0" 
+                step="0.1" 
+                label={fieldLabels.experience_years} 
+                name="experience_years" 
+                value={form.experience_years} 
+                onChange={onChange} 
+                required 
+                placeholder="Years of experience"
+              />
+              
+              <SelectField 
+                label={fieldLabels.current_position} 
+                name="current_position" 
+                value={form.current_position} 
+                onChange={onChange} 
+                options={[
+                  { value: '', label: 'Select current position' },
+                  { value: 'frontend', label: 'Frontend Developer' },
+                  { value: 'backend', label: 'Backend Developer' },
+                  { value: 'full stack', label: 'Full Stack Developer' },
+                  { value: 'data scientist', label: 'Data Scientist' },
+                  { value: 'ai-ml', label: 'AI/ML Engineer' },
+                  { value: 'qa', label: 'QA Engineer' },
+                  { value: 'other', label: 'Other' },
+                ]} 
+                required 
+              />
+              
+              <TextField 
+                type="text" 
+                label={fieldLabels.preferred_salary} 
+                name="preferred_salary" 
+                value={form.preferred_salary} 
+                onChange={onChange} 
+                placeholder="Enter expected salary (e.g., 15 LPA)"
+              />
+              
+              <SelectField 
+                label={fieldLabels.looking_for}
+                name="looking_for"
+                value={form.looking_for} 
+                onChange={onChange} 
+                options={[
+                  { value: '', label: 'Select job role' },
+                  { value: 'frontend', label: 'Frontend Developer' },
+                  { value: 'backend', label: 'Backend Developer' },
+                  { value: 'full stack', label: 'Full Stack Developer' },
+                  { value: 'data scientist', label: 'Data Scientist' },
+                  { value: 'ai-ml', label: 'AI/ML Engineer'},
+                  { value: 'qa', label: 'QA Engineer'},
+                  { value: 'other', label: 'Other'}
+
+                ]}
+              />
+              
+              <SelectField 
+                label={fieldLabels.user_role} 
+                name="user_role" 
+                value={form.user_role} 
+                onChange={onChange} 
+                options={[
+                  { value: '', label: 'Select employment type' },
+                  { value: 'contractor', label: 'Contractor'},
+                  { value: 'full-time', label: 'Full-time'},
+                  { value: 'part-time', label: 'Part-time'},
+                  { value: 'any', label: 'Any'},
+                ]} 
+              />
+              
               <div className="file-row">
                 <label>{fieldLabels.resume}</label>
                 <div className="file-input-wrapper">
-                  <input type="file" name="resume" accept="application/pdf" onChange={onChange} className="file-input" />
-                  <span className="file-label">{form.resume ? form.resume.name : 'Choose PDF file'}</span>
+                  <input 
+                    type="file" 
+                    name="resume" 
+                    accept="application/pdf" 
+                    onChange={onChange} 
+                    className="file-input" 
+                  />
+                  <span className="file-label">
+                    {form.resume ? (typeof form.resume === 'string' ? form.resume.split('/').pop() : form.resume.name) : 'Choose PDF file'}
+                  </span>
                 </div>
                 <small className="file-hint">Upload a PDF file. Max 5MB.</small>
               </div>
