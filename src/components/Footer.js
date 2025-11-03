@@ -246,7 +246,7 @@ const Footer = () => {
               ))}
             </div>
 
-            <motion.button 
+            {/* <motion.button 
               className="footer-cta-button"
               onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
               whileHover={{ scale: 1.05 }}
@@ -254,7 +254,7 @@ const Footer = () => {
             >
               <span>Start Your Project</span>
               <i className="fas fa-arrow-right"></i>
-            </motion.button>
+            </motion.button> */}
           </motion.div>
         </div>
 

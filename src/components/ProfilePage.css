@@ -3,6 +3,7 @@
   min-height: 100vh;
   background: #0a0a0a;
   padding: 2rem;
+  padding-top: 6rem; /* offset for fixed onboarding navbar */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -175,7 +176,7 @@
 }
 
 @media (max-width: 768px) {
-  .profile-page { padding: 1rem; }
+  .profile-page { padding: 1rem; padding-top: 5rem; }
   .profile-card { padding: 1.25rem; border-radius: 16px; }
   .form-grid { grid-template-columns: 1fr; }
 }

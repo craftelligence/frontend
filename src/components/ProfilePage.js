@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
 import { deleteUser, signOut, onAuthStateChanged } from 'firebase/auth';
 import './ProfilePage.css';
+import OnboardingNavbar from './OnboardingNavbar';
 
 const API_BASE = (process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000').replace(/\/$/, '');
 const apiUrl = (path) => `${API_BASE}${path.startsWith('/') ? path : `/${path}`}`;
@@ -51,6 +52,7 @@ export default function ProfilePage() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [resumeUrl, setResumeUrl] = useState('');
 
   // Subscribe to auth state
   useEffect(() => {
@@ -135,6 +137,12 @@ export default function ProfilePage() {
           user_role: data.user_role ?? prev.user_role ?? '',
           resume: null, // file input not prefilled
         }));
+        // Capture resume URL if provided by backend, otherwise fall back to a conventional endpoint
+        try {
+          const providedUrl = data.resume_url || data.resume || '';
+          const fallbackUrl = fbUser ? apiUrl(`/profiles/user/${encodeURIComponent(fbUser.uid)}/resume`) : '';
+          setResumeUrl(providedUrl || fallbackUrl);
+        } catch {}
       } catch (e) {
         // swallow errors to not block the page
       } finally {
@@ -152,7 +160,7 @@ export default function ProfilePage() {
         try { localStorage.removeItem(`profile:${fbUser.uid}`); } catch {}
       }
       await signOut(auth);
-      navigate('/');
+      navigate('/onboarding');
     } catch (e) {
       setError(e?.message || 'Failed to log out');
     } finally {
@@ -280,6 +288,12 @@ export default function ProfilePage() {
               user_role: data.user_role ?? prev.user_role ?? '',
               resume: null,
             }));
+            // Update resume URL
+            try {
+              const providedUrl = data.resume_url || data.resume || '';
+              const fallbackUrl = fbUser ? apiUrl(`/profiles/user/${encodeURIComponent(fbUser.uid)}/resume`) : '';
+              setResumeUrl(providedUrl || fallbackUrl);
+            } catch {}
           }
         } catch {}
         setMessage('Profile updated successfully.');
@@ -288,53 +302,56 @@ export default function ProfilePage() {
 
       // If update failed with 404, try create
       if (putRes.status === 404) {
-        if (!isCreatePayloadValid) {
-          throw new Error('Please complete all required fields and attach a PDF resume to create your profile.');
-        }
-        const createFd = toFormData(form);
-        const postRes = await fetch(apiUrl('/profiles/'), {
-          method: 'POST',
-          headers: authHeaders,
-          body: createFd,
-        });
-        if (!postRes.ok) {
-          const txt = await postRes.text();
-          throw new Error(txt || 'Failed to create profile');
-        }
-        // After creating, re-fetch to populate the latest from server
         try {
-          const idTokenAfter = await fbUser.getIdToken?.();
-          const authHeadersAfter = idTokenAfter ? { Authorization: `Bearer ${idTokenAfter}` } : {};
-          const refRes = await fetch(apiUrl(`/profiles/user/${encodeURIComponent(fbUser.uid)}`), {
-            method: 'GET',
-            headers: {
-              ...authHeadersAfter,
-              'Cache-Control': 'no-store',
-            },
+          const createFd = toFormData(form);
+          const postRes = await fetch(apiUrl('/profiles/'), {
+            method: 'POST',
+            headers: authHeaders,
+            body: createFd,
           });
-          if (refRes.ok) {
-            const data = await refRes.json();
-            setForm((prev) => ({
-              ...prev,
-              name: data.name ?? prev.name ?? '',
-              email: data.email ?? prev.email ?? '',
-              phone: data.phone_no ?? prev.phone ?? '',
-              availability: data.availability ?? prev.availability ?? '',
-              location: data.interested_location ?? prev.location ?? '',
-              start_date: data.start_date ?? prev.start_date ?? '',
-              current_job_location: data.current_job_location ?? prev.current_job_location ?? '',
-              job_status: data.job_status ?? prev.job_status ?? '',
-              experience_years: data.experience_years !== undefined && data.experience_years !== null ? String(data.experience_years) : prev.experience_years,
-              current_position: data.current_position ?? prev.current_position ?? '',
-              preferred_salary: data.preferred_salary !== undefined && data.preferred_salary !== null ? String(data.preferred_salary) : prev.preferred_salary,
-              looking_for: data.looking_for ?? prev.looking_for ?? '',
-              user_role: data.user_role ?? prev.user_role ?? '',
-              resume: null,
-            }));
+          if (!postRes.ok) {
+            const txt = await postRes.text();
+            throw new Error(txt || 'Failed to create profile');
           }
-        } catch {}
-        setMessage('Profile created successfully.');
-        return;
+          // After creating, re-fetch to populate the latest from server
+          try {
+            const idTokenAfter = await fbUser.getIdToken?.();
+            const authHeadersAfter = idTokenAfter ? { Authorization: `Bearer ${idTokenAfter}` } : {};
+            const refRes = await fetch(apiUrl(`/profiles/user/${encodeURIComponent(fbUser.uid)}`), {
+              method: 'GET',
+              headers: {
+                ...authHeadersAfter,
+                'Cache-Control': 'no-store',
+              },
+            });
+            if (refRes.ok) {
+              const data = await refRes.json();
+              setForm((prev) => ({
+                ...prev,
+                name: data.name ?? prev.name ?? '',
+                email: data.email ?? prev.email ?? '',
+                phone: data.phone_no ?? prev.phone ?? '',
+                availability: data.availability ?? prev.availability ?? '',
+                location: data.interested_location ?? prev.location ?? '',
+                start_date: data.start_date ?? prev.start_date ?? '',
+                current_job_location: data.current_job_location ?? prev.current_job_location ?? '',
+                job_status: data.job_status ?? prev.job_status ?? '',
+                experience_years: data.experience_years !== undefined && data.experience_years !== null ? String(data.experience_years) : prev.experience_years,
+                current_position: data.current_position ?? prev.current_position ?? '',
+                preferred_salary: data.preferred_salary !== undefined && data.preferred_salary !== null ? String(data.preferred_salary) : prev.preferred_salary,
+                looking_for: data.looking_for ?? prev.looking_for ?? '',
+                user_role: data.user_role ?? prev.user_role ?? '',
+                resume: null,
+              }));
+            }
+          } catch {}
+          setMessage('Profile created successfully.');
+          return;
+        } catch (err) {
+          setError(err.message || 'Something went wrong');
+        } finally {
+          setLoading(false);
+        }
       }
 
       const errTxt = await putRes.text();
@@ -373,11 +390,11 @@ export default function ProfilePage() {
         await deleteUser(fbUser);
         try { localStorage.removeItem(`profile:${fbUser.uid}`); } catch {}
         await signOut(auth).catch(() => {});
-        navigate('/');
+        navigate('/onboarding');
         return;
       } catch (authErr) {
         await signOut(auth).catch(() => {});
-        navigate('/');
+        navigate('/onboarding');
         return;
       }
     } catch (err) {
@@ -395,8 +412,35 @@ export default function ProfilePage() {
     setConfirmOpen(true);
   };
 
+  const handleViewResume = async () => {
+    if (!resumeUrl) return;
+    try {
+      // Prefer fetching to create a blob URL so browser treats it as inline PDF
+      const idToken = await fbUser?.getIdToken?.();
+      const headers = idToken ? { Authorization: `Bearer ${idToken}` } : {};
+      const resp = await fetch(resumeUrl, { headers });
+      if (!resp.ok) throw new Error('Failed to fetch resume');
+      const blob = await resp.blob();
+      const pdfBlob = new Blob([blob], { type: 'application/pdf' });
+      const blobUrl = URL.createObjectURL(pdfBlob);
+      const w = window.open('', '_blank');
+      if (w) {
+        w.document.write('<!DOCTYPE html><html><head><title>Resume</title><meta name="viewport" content="width=device-width, initial-scale=1"/></head><body style="margin:0;padding:0;overflow:hidden;background:#111">');
+        w.document.write(`<embed src="${blobUrl}#toolbar=1&navpanes=0&scrollbar=1" type="application/pdf" style="border:0;width:100vw;height:100vh" />`);
+        w.document.write('</body></html>');
+        w.document.close();
+      } else {
+        window.open(blobUrl, '_blank', 'noopener,noreferrer');
+      }
+    } catch (e) {
+      window.open(resumeUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
+
   return (
-    <div className="profile-page">
+    <>
+      <OnboardingNavbar />
+      <div className="profile-page">
       <div className="profile-container">
         <div className="profile-topbar">
           <button type="button" className="back-btn" onClick={() => navigate('/onboarding')}>← Back to Home</button>
@@ -503,8 +547,7 @@ export default function ProfilePage() {
                 options={[
                   { value: '', label: 'Select job status' },
                   { value: 'employed', label: 'Employed' },
-                  { value: 'unemployed', label: 'Unemployed' },
-                  { value: 'open-to-offers', label: 'Open to Offers' },
+                  { value: 'unemployed', label: 'Unemployed' }
                 ]} 
                 required 
               />
@@ -599,6 +642,17 @@ export default function ProfilePage() {
             </div>
 
             <div className="btn-row">
+              {resumeUrl && (
+                <button
+                  type="button"
+                  onClick={handleViewResume}
+                  disabled={loading}
+                  className="btn"
+                  title="View your uploaded resume"
+                >
+                  View Resume
+                </button>
+              )}
               <button type="button" onClick={handleDelete} disabled={loading} className="btn btn-danger">
                 {loading ? 'Please wait...' : 'Delete Profile'}
               </button>
@@ -636,6 +690,7 @@ export default function ProfilePage() {
         )}
       </div>
     </div>
+    </>
   );
 }
 
