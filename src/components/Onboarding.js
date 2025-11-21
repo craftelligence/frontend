@@ -16,6 +16,9 @@ export default function Onboarding() {
   const [fbUser, setFbUser] = useState(() => auth.currentUser);
   const [loading, setLoading] = useState(false);
   const [hasProfile, setHasProfile] = useState(null); // null=unknown, true=existing, false=first-time
+  const [shortlistItems, setShortlistItems] = useState([]);
+  const [shortlistLoading, setShortlistLoading] = useState(false);
+  const [shortlistError, setShortlistError] = useState('');
 
   // keep auth state in sync
   const [authChecked, setAuthChecked] = useState(false);
@@ -92,6 +95,39 @@ export default function Onboarding() {
     checkProfile();
   }, [fbUser, navigate, authChecked]);
 
+  // Fetch shortlist status for the logged-in candidate
+  useEffect(() => {
+    const fetchShortlist = async () => {
+      if (!fbUser) return;
+      setShortlistError('');
+      setShortlistLoading(true);
+      try {
+        const idToken = await fbUser.getIdToken?.();
+        const headers = idToken ? { Authorization: `Bearer ${idToken}` } : {};
+        const resp = await fetch(
+          apiUrl(`/positions/shortlist-status/${encodeURIComponent(fbUser.uid)}`),
+          { method: 'GET', headers }
+        );
+        if (!resp.ok) {
+          if (resp.status !== 404) {
+            const txt = await resp.text();
+            throw new Error(txt || 'Failed to fetch shortlist status');
+          }
+          setShortlistItems([]);
+          return;
+        }
+        const data = await resp.json();
+        const items = Array.isArray(data?.items) ? data.items : [];
+        setShortlistItems(items);
+      } catch (e) {
+        setShortlistError(e?.message || 'Could not load shortlist status');
+      } finally {
+        setShortlistLoading(false);
+      }
+    };
+    fetchShortlist();
+  }, [fbUser]);
+
   // Show loading state while checking auth or profile
   if (!authChecked || loading || hasProfile === null) {
     return (
@@ -147,6 +183,40 @@ export default function Onboarding() {
               We use secure authentication and share only the details you provide for matching. We never sell your data.
             </p>
           </div>
+        </div>
+      </section>
+
+      <section className="onboarding-shortlist">
+        <div className="container">
+          <div className="shortlist-header">
+            <h2>Your Shortlisted Positions</h2>
+          </div>
+          {shortlistLoading && <div className="message-info">Loading shortlist...</div>}
+          {shortlistError && <div className="message-error">{shortlistError}</div>}
+          {!shortlistLoading && !shortlistError && shortlistItems.length === 0 && (
+            <div className="message-info">No shortlist updates yet.</div>
+          )}
+          {!shortlistLoading && shortlistItems.length > 0 && (
+            <div className="shortlist-grid">
+              {shortlistItems.map((it, idx) => (
+                <div className="shortlist-card" key={`${it.positionId || idx}`}>
+                  <div className="shortlist-row">
+                    <h3 className="shortlist-title">{it.positionTitle || 'Untitled Role'}</h3>
+                    <span
+                      className={`shortlist-status ${it.shortlisted ? 'is-shortlisted' : 'is-pending'}`}
+                      title={it.shortlisted ? 'Shortlisted' : 'Not yet shortlisted'}
+                    >
+                      {it.shortlisted ? 'Shortlisted' : 'Pending'}
+                    </span>
+                  </div>
+                  <p className="shortlist-meta">
+                    {it.recruiterDisplayName || 'Recruiter'}
+                    {it.recruiterCompanyName ? ` • ${it.recruiterCompanyName}` : ''}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

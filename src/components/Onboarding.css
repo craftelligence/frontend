@@ -365,12 +365,107 @@
     font-size: 14px; 
     line-height: 1.5;
   }
+
+  /* Shortlist section - distinct look from hero/highlights */
+  .onboarding-shortlist {
+    padding: 40px 0 48px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.0) 100%);
+    position: relative;
+  }
+
+  .onboarding-shortlist::before,
+  .onboarding-shortlist::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  }
+
+  .onboarding-shortlist::before { top: 0; }
+  .onboarding-shortlist::after { bottom: 0; }
+
+  .shortlist-header { margin-bottom: 16px; }
+  .shortlist-header h2 {
+    margin: 0 0 6px;
+    font-size: clamp(22px, 3.5vw, 28px);
+    font-weight: 700;
+    color: #e8e8e8; /* not gradient to avoid hero-like feel */
+  }
+  .shortlist-subtitle {
+    margin: 0;
+    color: #b8b8b8;
+    font-size: 14px;
+  }
+
+  .shortlist-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+
+  .shortlist-card {
+    background: rgba(255,255,255,0.045);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 12px;
+    padding: 18px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .shortlist-card:hover {
+    border-color: rgba(255,255,255,0.16);
+    transform: translateY(-3px);
+  }
+
+  .shortlist-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+
+  .shortlist-title {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+    color: #f0f0f0;
+  }
+
+  .shortlist-meta {
+    margin: 0;
+    color: #c8c8c8;
+    font-size: 13px;
+  }
+
+  .shortlist-status {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    border: 1px solid transparent;
+    white-space: nowrap;
+  }
+
+  .shortlist-status.is-shortlisted {
+    background: rgba(0,200,120,0.14);
+    border-color: rgba(0,200,120,0.45);
+    color: #00c878;
+  }
+
+  .shortlist-status.is-pending {
+    background: rgba(255, 180, 0, 0.10);
+    border-color: rgba(255,180,0,0.35);
+    color: #ffb400;
+  }
   
   /* Responsive */
   @media (max-width: 900px) {
     .highlights-grid { grid-template-columns: 1fr; }
     .cta-grid { grid-template-columns: 1fr; }
     .faq-grid { grid-template-columns: 1fr; }
+    .shortlist-grid { grid-template-columns: 1fr; }
     
     .title { font-size: 32px; }
     .onboarding-hero { padding: 80px 0 32px; }
