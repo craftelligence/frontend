@@ -17,16 +17,7 @@ const Onboarding = lazy(() => import('./components/Onboarding'));
 
 // Loading component
 const LoadingSpinner = () => (
-  <div style={{
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '200px',
-    fontSize: '18px',
-    color: '#00ff66'
-  }}>
-    Loading...
-  </div>
+  <div className="loading-state">Loading the good stuff…</div>
 );
 
 function App() {
@@ -79,4 +70,4 @@ function App() {
   );
 }
 
-export default App; 
+export default App;
