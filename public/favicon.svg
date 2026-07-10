@@ -1,6 +1,13 @@
 <svg width="64" height="64" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <style>
+      /* Ink color follows the browser/OS theme:
+         black logo on light themes, white logo on dark themes. */
+      svg { color: #000000; }
+      @media (prefers-color-scheme: dark) {
+        svg { color: #ffffff; }
+      }
+
       .grid-line {
         animation: grid-pulse 3s ease-in-out infinite;
       }
@@ -33,7 +40,7 @@
       
       @keyframes grid-pulse {
         0%, 100% { 
-          stroke: #000000;
+          stroke: currentColor;
           stroke-width: 1;
           opacity: 0.6;
         }
@@ -46,14 +53,14 @@
       
       @keyframes center-glow {
         0% { 
-          fill: #000000;
+          fill: currentColor;
           stroke: #00ff66;
           stroke-width: 1.5;
           filter: drop-shadow(0 0 3px rgba(0, 255, 102, 0.5));
         }
         100% { 
           fill: #00ff66;
-          stroke: #ffffff;
+          stroke: currentColor;
           stroke-width: 2;
           filter: drop-shadow(0 0 8px rgba(0, 255, 102, 1));
         }
@@ -61,7 +68,7 @@
       
       @keyframes corner-pulse {
         0%, 100% { 
-          fill: #000000;
+          fill: currentColor;
           r: 2.5;
         }
         50% { 
@@ -74,14 +81,14 @@
       @keyframes diagonal-flow {
         0% { 
           stroke-dashoffset: 0;
-          stroke: #000000;
+          stroke: currentColor;
         }
         50% { 
           stroke: #00ff66;
         }
         100% { 
           stroke-dashoffset: 15;
-          stroke: #000000;
+          stroke: currentColor;
         }
       }
       
@@ -92,56 +99,56 @@
     </style>
     
     <linearGradient id="centerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#000000;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:currentColor;stop-opacity:1" />
       <stop offset="50%" style="stop-color:#00ff66;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00ff66;stop-opacity:1" />
     </linearGradient>
   </defs>
   
   <!-- Rotate entire logo 25 degrees -->
   <g transform="rotate(25 50 50)">
     <!-- Outer frame - Bold single line -->
-    <rect x="15" y="15" width="70" height="70" fill="none" stroke="#000000" stroke-width="1.5" rx="2.5"/>
+    <rect x="15" y="15" width="70" height="70" fill="none" stroke="currentColor" stroke-width="1.5" rx="2.5"/>
     
     <!-- Double border on sides (not at corners) -->
     <!-- Top side double line -->
-    <line x1="28" y1="18" x2="72" y2="18" stroke="#000000" stroke-width="1"/>
+    <line x1="28" y1="18" x2="72" y2="18" stroke="currentColor" stroke-width="1"/>
     
     <!-- Right side double line -->
-    <line x1="82" y1="28" x2="82" y2="72" stroke="#000000" stroke-width="1"/>
+    <line x1="82" y1="28" x2="82" y2="72" stroke="currentColor" stroke-width="1"/>
     
     <!-- Bottom side double line -->
-    <line x1="28" y1="82" x2="72" y2="82" stroke="#000000" stroke-width="1"/>
+    <line x1="28" y1="82" x2="72" y2="82" stroke="currentColor" stroke-width="1"/>
     
     <!-- Left side double line -->
-    <line x1="18" y1="28" x2="18" y2="72" stroke="#000000" stroke-width="1"/>
+    <line x1="18" y1="28" x2="18" y2="72" stroke="currentColor" stroke-width="1"/>
     
     <!-- Vertical grid lines - Bold -->
-    <line class="grid-line" x1="33" y1="15" x2="33" y2="85" stroke="#000000" stroke-width="1"/>
-    <line class="grid-line" x1="50" y1="15" x2="50" y2="85" stroke="#000000" stroke-width="1"/>
-    <line class="grid-line" x1="67" y1="15" x2="67" y2="85" stroke="#000000" stroke-width="1"/>
+    <line class="grid-line" x1="33" y1="15" x2="33" y2="85" stroke="currentColor" stroke-width="1"/>
+    <line class="grid-line" x1="50" y1="15" x2="50" y2="85" stroke="currentColor" stroke-width="1"/>
+    <line class="grid-line" x1="67" y1="15" x2="67" y2="85" stroke="currentColor" stroke-width="1"/>
     
     <!-- Horizontal grid lines - Bold -->
-    <line class="grid-line" x1="15" y1="33" x2="85" y2="33" stroke="#000000" stroke-width="1"/>
-    <line class="grid-line" x1="15" y1="50" x2="85" y2="50" stroke="#000000" stroke-width="1"/>
-    <line class="grid-line" x1="15" y1="67" x2="85" y2="67" stroke="#000000" stroke-width="1"/>
+    <line class="grid-line" x1="15" y1="33" x2="85" y2="33" stroke="currentColor" stroke-width="1"/>
+    <line class="grid-line" x1="15" y1="50" x2="85" y2="50" stroke="currentColor" stroke-width="1"/>
+    <line class="grid-line" x1="15" y1="67" x2="85" y2="67" stroke="currentColor" stroke-width="1"/>
     
     <!-- Diagonal lines - Bold -->
     <line class="diagonal-line" x1="15" y1="15" x2="85" y2="85" stroke="#00ff66" stroke-width="1" stroke-dasharray="3, 3" opacity="0.6"/>
     <line class="diagonal-line" x1="85" y1="15" x2="15" y2="85" stroke="#00ff66" stroke-width="1" stroke-dasharray="3, 3" opacity="0.6" style="animation-delay: 2s;"/>
     
     <!-- Corner accents - Larger -->
-    <circle class="corner-accent" cx="25" cy="25" r="2.5" fill="#000000"/>
-    <circle class="corner-accent" cx="75" cy="25" r="2.5" fill="#000000"/>
-    <circle class="corner-accent" cx="25" cy="75" r="2.5" fill="#000000"/>
-    <circle class="corner-accent" cx="75" cy="75" r="2.5" fill="#000000"/>
+    <circle class="corner-accent" cx="25" cy="25" r="2.5" fill="currentColor"/>
+    <circle class="corner-accent" cx="75" cy="25" r="2.5" fill="currentColor"/>
+    <circle class="corner-accent" cx="25" cy="75" r="2.5" fill="currentColor"/>
+    <circle class="corner-accent" cx="75" cy="75" r="2.5" fill="currentColor"/>
     
     <!-- Inner decorative squares - Bold -->
     <rect x="33" y="33" width="33" height="33" fill="none" stroke="#00ff66" stroke-width="1" opacity="0.4">
       <animate attributeName="opacity" values="0.3;0.7;0.3" dur="3s" repeatCount="indefinite"/>
     </rect>
     
-    <rect x="38" y="38" width="23" height="23" fill="none" stroke="#000000" stroke-width="1" opacity="0.5">
+    <rect x="38" y="38" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5">
       <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2.5s" repeatCount="indefinite"/>
     </rect>
     
@@ -150,17 +157,17 @@
       <circle cx="73" cy="50" r="1.5" fill="#00ff66"/>
     </g>
     <g class="orbit-dot" style="animation-delay: -2s;">
-      <circle cx="73" cy="50" r="1.5" fill="#ffffff"/>
+      <circle cx="73" cy="50" r="1.5" fill="currentColor"/>
     </g>
     <g class="orbit-dot" style="animation-delay: -4s;">
-      <circle cx="73" cy="50" r="1.5" fill="#000000"/>
+      <circle cx="73" cy="50" r="1.5" fill="currentColor"/>
     </g>
     <g class="orbit-dot" style="animation-delay: -6s;">
       <circle cx="73" cy="50" r="1.5" fill="#00ff66"/>
     </g>
     
     <!-- Center focal square with gradient - Bold -->
-    <rect class="center-square" x="43" y="43" width="13" height="13" fill="#000000" stroke="#00ff66" stroke-width="1.5" rx="1"/>
+    <rect class="center-square" x="43" y="43" width="13" height="13" fill="currentColor" stroke="#00ff66" stroke-width="1.5" rx="1"/>
     
     <!-- Center core elements -->
     <rect x="46" y="46" width="7" height="7" fill="url(#centerGradient)" rx="1">
@@ -168,7 +175,7 @@
     </rect>
     
     <!-- Center dot with pulse - Larger -->
-    <circle cx="50" cy="50" r="2" fill="#ffffff">
+    <circle cx="50" cy="50" r="2" fill="#00ff66">
       <animate attributeName="r" values="1.5;2.5;1.5" dur="1.5s" repeatCount="indefinite"/>
       <animate attributeName="opacity" values="1;0.5;1" dur="1.5s" repeatCount="indefinite"/>
     </circle>
