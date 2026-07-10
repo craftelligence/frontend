@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
@@ -151,51 +151,6 @@ export default function ProfilePage() {
     };
     fetchProfile();
   }, [fbUser]);
-
-  const handleLogout = async () => {
-    try {
-      setLoading(true);
-      // Clear cached form for current user, if any
-      if (fbUser) {
-        try { localStorage.removeItem(`profile:${fbUser.uid}`); } catch {}
-      }
-      await signOut(auth);
-      navigate('/onboarding');
-    } catch (e) {
-      setError(e?.message || 'Failed to log out');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const isCreatePayloadValid = useMemo(() => {
-    // For POST, all fields except resume must be non-empty, and resume must be a File
-    const {
-      name,
-      email,
-      phone,
-      availability,
-      location,
-      start_date,
-      current_job_location,
-      job_status,
-      current_position,
-      resume,
-    } = form;
-    return (
-      !!name &&
-      !!email &&
-      !!phone &&
-      !!availability &&
-      !!location &&
-      !!start_date && // one of allowed enum options
-      !!current_job_location &&
-      !!job_status &&
-      form.experience_years !== '' &&
-      !!current_position && // one of allowed enum options
-      resume instanceof File
-    );
-  }, [form]);
 
   const onChange = (e) => {
     const { name, value, files } = e.target;
