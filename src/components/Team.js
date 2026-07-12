@@ -4,10 +4,10 @@ import { Linkedin } from 'lucide-react';
 import './Landing.css';
 
 const experts = [
-  { name: 'Ajay Sihag', role: 'Founder & Lead Engineer', focus: ['Architecture', 'Backend', 'AI'], tone: 'mint' },
-  { name: 'Your Name', role: 'Frontend Engineer', focus: ['React', 'UX', 'Design systems'], tone: 'lilac' },
-  { name: 'Your Name', role: 'AI / ML Engineer', focus: ['LLMs', 'Data', 'Automation'], tone: 'peach' },
-  { name: 'Your Name', role: 'Product Designer', focus: ['UI', 'Research', 'Prototyping'], tone: 'sun' },
+  { name: 'Unnati Singh', role: 'Founder', bio: 'Shapes the product vision and turns rough ideas into interfaces people love to use.', photo: '/team/unnati.png', linkedin: 'https://www.linkedin.com/in/itisus/', tone: 'lilac', origin: '4% 0%' },
+  { name: 'Mukesh Kumar', role: 'Founder', bio: 'Sets the technical direction and builds the systems that keep everything running at scale.', photo: '/team/mukesh.png', linkedin: 'https://www.linkedin.com/in/itismukesh/', tone: 'mint', zoom: 1.1, origin: '44% 0%' },
+  { name: 'Ajay Kumar', role: 'Founding Member', bio: 'Designs the architecture and brings AI into products in ways that actually ship.', photo: '/team/ajay.png', linkedin: 'https://www.linkedin.com/in/itisajay/', tone: 'peach' },
+  { name: 'Jayant Singh', role: 'Software Engineer', bio: 'Full-stack engineer who ships end to end, from clean APIs to smooth deploys.', photo: '/team/jayant.png', linkedin: 'https://www.linkedin.com/in/jaicodes/', tone: 'sun', zoom: 1.5, origin: '53% 0%' },
 ];
 
 const initials = (name) => name.split(' ').map((part) => part[0]).slice(0, 2).join('').toUpperCase();
@@ -33,18 +33,20 @@ const Team = () => (
             transition={{ delay: index * 0.07 }}
           >
             <div className="team-top">
-              <span className="team-avatar">{initials(member.name)}</span>
-              <a className="team-social" href="https://www.linkedin.com/company/craftelligence" target="_blank" rel="noreferrer" aria-label={`${member.name} on LinkedIn`}>
+              <span className="team-avatar">
+                {member.photo ? (
+                  <img src={member.photo} alt={member.name} loading="lazy" style={{ ...(member.zoom ? { transform: `scale(${member.zoom})` } : {}), ...(member.origin ? { transformOrigin: member.origin } : {}), ...(member.pos ? { objectPosition: member.pos } : {}) }} />
+                ) : (
+                  initials(member.name)
+                )}
+              </span>
+              <a className="team-social" href={member.linkedin} target="_blank" rel="noreferrer" aria-label={`${member.name} on LinkedIn`}>
                 <Linkedin size={16} />
               </a>
             </div>
             <h3>{member.name}</h3>
             <span className="team-role">{member.role}</span>
-            <div className="team-tags">
-              {member.focus.map((tag) => (
-                <span key={tag}>{tag}</span>
-              ))}
-            </div>
+            <p className="team-bio">{member.bio}</p>
           </motion.article>
         ))}
       </div>
