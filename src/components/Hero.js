@@ -1,7 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Bot, ChartNoAxesCombined, Sparkles } from 'lucide-react';
+import { ArrowRight, Sparkles, TrendingUp } from 'lucide-react';
 import './Landing.css';
+
+const linePath = 'M0 82 C 28 62, 46 74, 72 52 S 118 30, 150 46 S 206 20, 238 28 S 286 12, 300 16';
+const areaPath = `${linePath} L300 110 L0 110 Z`;
 
 const Hero = () => {
   const scrollToContact = () => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
@@ -21,17 +24,73 @@ const Hero = () => {
           </div>
           <div className="hero-proof"><span className="proof-dot" /> Available for carefully chosen projects</div>
         </motion.div>
-        <motion.div className="hero-art" initial={{ opacity: 0, scale: 0.92, rotate: -3 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} transition={{ duration: 0.8, delay: 0.15 }}>
-          <div className="art-window">
-            <div className="art-top"><span /><span /><span /><p>craftelligence / studio</p></div>
-            <div className="art-body">
-              <div className="art-title">The build is<br /><strong>in motion.</strong></div>
-              <div className="art-orbit"><Bot size={30} /><i /><i /><i /></div>
-              <div className="art-bars"><span /><span /><span /><span /></div>
+
+        <motion.div className="hero-art" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.15 }}>
+          <motion.div
+            className="hero-panel"
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <div className="hero-panel-top"><i /><i /><i /><p>craftelligence · delivery</p></div>
+            <div className="hero-panel-body">
+              <div className="hp-row">
+                <div>
+                  <small>Products shipped</small>
+                  <strong>128</strong>
+                </div>
+                <span className="hp-trend"><TrendingUp size={13} /> +24%</span>
+              </div>
+              <svg className="hp-chart" viewBox="0 0 300 110" preserveAspectRatio="none" aria-hidden="true">
+                <defs>
+                  <linearGradient id="heroFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#9be0c4" stopOpacity="0.5" />
+                    <stop offset="100%" stopColor="#9be0c4" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+                <motion.path
+                  d={areaPath}
+                  fill="url(#heroFill)"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.8, delay: 1 }}
+                />
+                <motion.path
+                  d={linePath}
+                  fill="none"
+                  stroke="#166b53"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 1.3, delay: 0.4, ease: 'easeInOut' }}
+                />
+              </svg>
+              <div className="hp-tags"><span>AI</span><span>Cloud</span><span>APIs</span><span>Data</span></div>
             </div>
-          </div>
-          <motion.div className="floating-note note-top" animate={{ y: [0, -9, 0] }} transition={{ duration: 4, repeat: Infinity }}><Bot size={17} /> AI systems</motion.div>
-          <motion.div className="floating-note note-bottom" animate={{ y: [0, 9, 0] }} transition={{ duration: 4.5, repeat: Infinity }}><ChartNoAxesCombined size={17} /> Scale-ready</motion.div>
+          </motion.div>
+
+          <motion.div
+            className="hero-code"
+            animate={{ y: [0, 9, 0] }}
+            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <div className="hc-top"><i /><i /><i /></div>
+            <pre>
+{``}<span className="c-key">const</span>{` craft = () =>
+  `}<span className="c-fn">ship</span>{`(idea, {
+    ai: `}<span className="c-str">true</span>{`,
+    scale: `}<span className="c-str">"ready"</span>{`,
+  });`}<span className="c-cur">▍</span>
+            </pre>
+          </motion.div>
+
+          <motion.div
+            className="hero-chip"
+            animate={{ y: [0, -8, 0] }}
+            transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <span className="chip-dot" /> Shipped to production
+          </motion.div>
         </motion.div>
       </div>
     </section>
